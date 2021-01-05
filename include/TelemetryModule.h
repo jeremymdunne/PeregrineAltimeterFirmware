@@ -12,15 +12,16 @@
 
 #include <Arduino.h> 
 #include <RocketState.h> 
+#include <SerialHandler.h> 
 
 /// Enum containing all possible responses made by the system 
 typedef enum {
     TELEMETRY_MODULE_OK  = 0,                           ///< Telemetry Module Ok 
-    TELEMETRY_MODULE_AVAILABLE_SERIAL_MESSAGE           ///< Available message from serial 
-    TELEMETRY_MODULE_AVAILABLE_RADIO_MESSAGE            ///< Available message from radio 
-    TELEMETRY_MODULE_STORAGE_COMMUNICATION_FAIL         ///< Failed to communicate with the flash storage  
-    TELEMETRY_MODULE_RADIO_COMMUNICATION_FAIL           ///< Failed to communicate with the radio 
-    TELEMETRY_MODULE_UNKOWN_FAIL                        ///< Unkown failure 
+    TELEMETRY_MODULE_AVAILABLE_SERIAL_MESSAGE,          ///< Available message from serial 
+    TELEMETRY_MODULE_AVAILABLE_RADIO_MESSAGE,           ///< Available message from radio 
+    TELEMETRY_MODULE_STORAGE_COMMUNICATION_FAIL,        ///< Failed to communicate with the flash storage  
+    TELEMETRY_MODULE_RADIO_COMMUNICATION_FAIL,          ///< Failed to communicate with the radio 
+    TELEMETRY_MODULE_UNKOWN_FAIL,                       ///< Unkown failure 
 
 }   TelemetryModuleStatus_t; 
 
@@ -49,7 +50,9 @@ public:
     TelemetryModuleStatus_t stop(); 
 
 private: 
-    TelemetryModuleStatus_t status;         ///< Most recent status 
+    TelemetryModuleStatus_t _status;        ///< Most recent status 
+    RocketState *_rocket_state;             ///< Pointer to the state of the Rocket 
+    SerialHandler _serial_handler;          ///< SerialHandler object to handle serial communication 
 
     /**
      * get the most recent status of the TelemetryModule
@@ -57,7 +60,7 @@ private:
      * @return most recent status 
      */ 
     TelemetryModuleStatus_t get_status(){
-        return status; 
+        return _status; 
     } 
 
 
