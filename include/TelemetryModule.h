@@ -13,6 +13,7 @@
 #include <Arduino.h> 
 #include <RocketState.h> 
 #include <SerialHandler.h> 
+#include <UpdateTimer.h> 
 
 /// Enum containing all possible responses made by the system 
 typedef enum {
@@ -50,9 +51,11 @@ public:
     TelemetryModuleStatus_t stop(); 
 
 private: 
-    TelemetryModuleStatus_t _status;        ///< Most recent status 
-    RocketState *_rocket_state;             ///< Pointer to the state of the Rocket 
-    SerialHandler _serial_handler;          ///< SerialHandler object to handle serial communication 
+    TelemetryModuleStatus_t _status;            ///< Most recent status 
+    RocketState *_rocket_state;                 ///< Pointer to the state of the Rocket 
+    SerialHandler _serial_handler;              ///< SerialHandler object to handle serial communication 
+
+    UpdateTimer _general_flight_data_timer;     ///< Timer for the general flight data updates 
 
     /**
      * get the most recent status of the TelemetryModule

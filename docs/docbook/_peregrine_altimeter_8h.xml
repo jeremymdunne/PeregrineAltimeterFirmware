@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="__peregrine_altimeter_8h" xml:lang="en-US">
+<title>include/PeregrineAltimeter.h File Reference</title>
+<indexterm><primary>include/PeregrineAltimeter.h</primary></indexterm>
+<para>
+
+<para>Main control program for the altimeter. </para>
+ 
+</para>
+<programlisting>#include &lt;Arduino.h&gt;
+#include &lt;RocketState.h&gt;
+#include &lt;TelemetryModule.h&gt;
+</programlisting><simplesect>
+    <title>Classes    </title>
+        <itemizedlist>
+            <listitem><para>class <link linkend="_class_peregrine_altimeter">PeregrineAltimeter</link></para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Main control program for the altimeter. </para>
+
+<para>This class controls the execution of all other modules running on the altimeter.</para>
+
+<para><formalpara><title>Author</title>
+
+<para>Jeremy Dunne </para>
+</formalpara>
+</para>
+</section>
+</section>

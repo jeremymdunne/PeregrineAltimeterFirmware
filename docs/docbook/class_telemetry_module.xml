@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_class_telemetry_module" xml:lang="en-US">
+<title>TelemetryModule Class Reference</title>
+<indexterm><primary>TelemetryModule</primary></indexterm>
+<para>
+<computeroutput>#include &lt;TelemetryModule.h&gt;</computeroutput>
+</para>
+<simplesect>
+    <title>Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para><link linkend="__telemetry_module_8h_1a217ea60c660da63bb492a16afaf78c03">TelemetryModuleStatus_t</link> <link linkend="_class_telemetry_module_1a984bca81a80a67f90a3863099402c735">begin</link> (<link linkend="_struct_rocket_state">RocketState</link> *state)</para>
+</listitem>
+            <listitem><para><link linkend="__telemetry_module_8h_1a217ea60c660da63bb492a16afaf78c03">TelemetryModuleStatus_t</link> <link linkend="_class_telemetry_module_1a33e78c9582e195856c0e2bbb1acde408">update</link> ()</para>
+</listitem>
+            <listitem><para><link linkend="__telemetry_module_8h_1a217ea60c660da63bb492a16afaf78c03">TelemetryModuleStatus_t</link> <link linkend="_class_telemetry_module_1a55b787c3516a9d21673177d1390e3413">stop</link> ()</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Member Function Documentation</title>
+<anchor xml:id="_class_telemetry_module_1a984bca81a80a67f90a3863099402c735"/>    <section>
+    <title>begin()</title>
+<indexterm><primary>begin</primary><secondary>TelemetryModule</secondary></indexterm>
+<indexterm><primary>TelemetryModule</primary><secondary>begin</secondary></indexterm>
+<para><computeroutput><link linkend="__telemetry_module_8h_1a217ea60c660da63bb492a16afaf78c03">TelemetryModuleStatus_t</link> TelemetryModule::begin (<link linkend="_struct_rocket_state">RocketState</link> * state)</computeroutput></para>
+<para>initialize all telemetry and hardware</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters                    </title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+                                <entry>state</entry>
+                                <entry>
+<para><link linkend="_struct_rocket_state">RocketState</link> pointer to access data from </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>error or success code </para>
+</formalpara>
+</para>
+    </section><anchor xml:id="_class_telemetry_module_1a55b787c3516a9d21673177d1390e3413"/>    <section>
+    <title>stop()</title>
+<indexterm><primary>stop</primary><secondary>TelemetryModule</secondary></indexterm>
+<indexterm><primary>TelemetryModule</primary><secondary>stop</secondary></indexterm>
+<para><computeroutput><link linkend="__telemetry_module_8h_1a217ea60c660da63bb492a16afaf78c03">TelemetryModuleStatus_t</link> TelemetryModule::stop ( )</computeroutput></para>
+<para>stop the telemetry module</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>error or success code </para>
+</formalpara>
+</para>
+    </section><anchor xml:id="_class_telemetry_module_1a33e78c9582e195856c0e2bbb1acde408"/>    <section>
+    <title>update()</title>
+<indexterm><primary>update</primary><secondary>TelemetryModule</secondary></indexterm>
+<indexterm><primary>TelemetryModule</primary><secondary>update</secondary></indexterm>
+<para><computeroutput><link linkend="__telemetry_module_8h_1a217ea60c660da63bb492a16afaf78c03">TelemetryModuleStatus_t</link> TelemetryModule::update ( )</computeroutput></para>
+<para>update the telemetry module</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>error or status update </para>
+</formalpara>
+</para>
+</section>
+<para>
+The documentation for this class was generated from the following files:</para>
+include/<link linkend="__telemetry_module_8h">TelemetryModule.h</link>src/<link linkend="__telemetry_module_8cpp">TelemetryModule.cpp</link></section>
+</section>

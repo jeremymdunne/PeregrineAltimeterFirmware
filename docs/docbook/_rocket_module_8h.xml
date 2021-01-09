@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="__rocket_module_8h" xml:lang="en-US">
+<title>include/RocketModule.h File Reference</title>
+<indexterm><primary>include/RocketModule.h</primary></indexterm>
+<para>
+
+<para>Template for rocket modules requiring access to the vehicle&apos;s state. </para>
+ 
+</para>
+<programlisting>#include &lt;RocketState.h&gt;
+</programlisting><simplesect>
+    <title>Classes    </title>
+        <itemizedlist>
+            <listitem><para>class <link linkend="_class_rocket_module">RocketModule</link></para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Template for rocket modules requiring access to the vehicle&apos;s state. </para>
+
+<para>Contains the required members for modules requiring access to the vehicle&apos;s state.</para>
+
+<para><formalpara><title>Author</title>
+
+<para>Jeremy Dunne </para>
+</formalpara>
+</para>
+</section>
+</section>

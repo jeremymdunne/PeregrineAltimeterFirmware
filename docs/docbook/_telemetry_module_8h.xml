@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="__telemetry_module_8h" xml:lang="en-US">
+<title>include/TelemetryModule.h File Reference</title>
+<indexterm><primary>include/TelemetryModule.h</primary></indexterm>
+<para>
+
+<para>Module that handles telemetry of the altimeter. </para>
+ 
+</para>
+<programlisting>#include &lt;Arduino.h&gt;
+#include &lt;RocketState.h&gt;
+#include &lt;SerialHandler.h&gt;
+</programlisting><simplesect>
+    <title>Classes    </title>
+        <itemizedlist>
+            <listitem><para>class <link linkend="_class_telemetry_module">TelemetryModule</link></para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Enumerations    </title>
+        <itemizedlist>
+            <listitem><para>enum <link linkend="__telemetry_module_8h_1a217ea60c660da63bb492a16afaf78c03">TelemetryModuleStatus_t</link> { 
+<link linkend="__telemetry_module_8h_1a217ea60c660da63bb492a16afaf78c03a7d1f0375acade55eecb7a5681a6c16fa">TELEMETRY_MODULE_OK</link> = 0
+, <link linkend="__telemetry_module_8h_1a217ea60c660da63bb492a16afaf78c03a7ba7dfcbda193c522b35f0569cb02b93">TELEMETRY_MODULE_AVAILABLE_SERIAL_MESSAGE</link>
+, <link linkend="__telemetry_module_8h_1a217ea60c660da63bb492a16afaf78c03a084d519897d817006f0e664c767ad534">TELEMETRY_MODULE_AVAILABLE_RADIO_MESSAGE</link>
+, <link linkend="__telemetry_module_8h_1a217ea60c660da63bb492a16afaf78c03a7ae4a52e8a5ccabb645ee98a7d979d25">TELEMETRY_MODULE_STORAGE_COMMUNICATION_FAIL</link>
+, 
+<link linkend="__telemetry_module_8h_1a217ea60c660da63bb492a16afaf78c03a54a76fb685a31c277006406e6bd54c47">TELEMETRY_MODULE_RADIO_COMMUNICATION_FAIL</link>
+, <link linkend="__telemetry_module_8h_1a217ea60c660da63bb492a16afaf78c03ace52f3f784d0164432300488cbc5542e">TELEMETRY_MODULE_UNKOWN_FAIL</link>
+ }</para>
+
+<para>Enum containing all possible responses made by the system. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Module that handles telemetry of the altimeter. </para>
+
+<para>This module handles storing, transmitting, and recalling data form the altimeter.</para>
+
+<para><formalpara><title>Author</title>
+
+<para>Jeremy Dunne </para>
+</formalpara>
+</para>
+</section>
+<section>
+<title>Enumeration Type Documentation</title>
+<anchor xml:id="__telemetry_module_8h_1a217ea60c660da63bb492a16afaf78c03"/>    <section>
+    <title>TelemetryModuleStatus_t</title>
+<indexterm><primary>TelemetryModuleStatus_t</primary><secondary>TelemetryModule.h</secondary></indexterm>
+<indexterm><primary>TelemetryModule.h</primary><secondary>TelemetryModuleStatus_t</secondary></indexterm>
+<para><computeroutput>enum <link linkend="__telemetry_module_8h_1a217ea60c660da63bb492a16afaf78c03">TelemetryModuleStatus_t</link></computeroutput></para><para>
+
+<para>Enum containing all possible responses made by the system. </para>
+</para>
+<informaltable frame="all">
+<title>Enumerator</title>
+    <tgroup cols="2" align="left" colsep="1" rowsep="1">
+      <colspec colname='c1'/>
+      <colspec colname='c2'/>
+<tbody>
+<row><entry><indexterm><primary>TELEMETRY_MODULE_OK</primary><secondary>TelemetryModule.h</secondary></indexterm>
+<indexterm><primary>TelemetryModule.h</primary><secondary>TELEMETRY_MODULE_OK</secondary></indexterm>
+<anchor xml:id="__telemetry_module_8h_1a217ea60c660da63bb492a16afaf78c03a7d1f0375acade55eecb7a5681a6c16fa"/>TELEMETRY_MODULE_OK</entry><entry>
+<para>Telemetry Module Ok. </para>
+</entry></row><row><entry><indexterm><primary>TELEMETRY_MODULE_AVAILABLE_SERIAL_MESSAGE</primary><secondary>TelemetryModule.h</secondary></indexterm>
+<indexterm><primary>TelemetryModule.h</primary><secondary>TELEMETRY_MODULE_AVAILABLE_SERIAL_MESSAGE</secondary></indexterm>
+<anchor xml:id="__telemetry_module_8h_1a217ea60c660da63bb492a16afaf78c03a7ba7dfcbda193c522b35f0569cb02b93"/>TELEMETRY_MODULE_AVAILABLE_SERIAL_MESSAGE</entry><entry>
+<para>Available message from serial. </para>
+</entry></row><row><entry><indexterm><primary>TELEMETRY_MODULE_AVAILABLE_RADIO_MESSAGE</primary><secondary>TelemetryModule.h</secondary></indexterm>
+<indexterm><primary>TelemetryModule.h</primary><secondary>TELEMETRY_MODULE_AVAILABLE_RADIO_MESSAGE</secondary></indexterm>
+<anchor xml:id="__telemetry_module_8h_1a217ea60c660da63bb492a16afaf78c03a084d519897d817006f0e664c767ad534"/>TELEMETRY_MODULE_AVAILABLE_RADIO_MESSAGE</entry><entry>
+<para>Available message from radio. </para>
+</entry></row><row><entry><indexterm><primary>TELEMETRY_MODULE_STORAGE_COMMUNICATION_FAIL</primary><secondary>TelemetryModule.h</secondary></indexterm>
+<indexterm><primary>TelemetryModule.h</primary><secondary>TELEMETRY_MODULE_STORAGE_COMMUNICATION_FAIL</secondary></indexterm>
+<anchor xml:id="__telemetry_module_8h_1a217ea60c660da63bb492a16afaf78c03a7ae4a52e8a5ccabb645ee98a7d979d25"/>TELEMETRY_MODULE_STORAGE_COMMUNICATION_FAIL</entry><entry>
+<para>Failed to communicate with the flash storage 
+<literallayout>&#160;&#xa;</literallayout>
+ </para>
+</entry></row><row><entry><indexterm><primary>TELEMETRY_MODULE_RADIO_COMMUNICATION_FAIL</primary><secondary>TelemetryModule.h</secondary></indexterm>
+<indexterm><primary>TelemetryModule.h</primary><secondary>TELEMETRY_MODULE_RADIO_COMMUNICATION_FAIL</secondary></indexterm>
+<anchor xml:id="__telemetry_module_8h_1a217ea60c660da63bb492a16afaf78c03a54a76fb685a31c277006406e6bd54c47"/>TELEMETRY_MODULE_RADIO_COMMUNICATION_FAIL</entry><entry>
+<para>Failed to communicate with the radio. </para>
+</entry></row><row><entry><indexterm><primary>TELEMETRY_MODULE_UNKOWN_FAIL</primary><secondary>TelemetryModule.h</secondary></indexterm>
+<indexterm><primary>TelemetryModule.h</primary><secondary>TELEMETRY_MODULE_UNKOWN_FAIL</secondary></indexterm>
+<anchor xml:id="__telemetry_module_8h_1a217ea60c660da63bb492a16afaf78c03ace52f3f784d0164432300488cbc5542e"/>TELEMETRY_MODULE_UNKOWN_FAIL</entry><entry>
+<para>Unkown failure. </para>
+</entry></row>    </tbody>
+    </tgroup>
+</informaltable>
+</section>
+</section>
+</section>

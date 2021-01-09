@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_main_8cpp" xml:lang="en-US">
+<title>src/main.cpp File Reference</title>
+<indexterm><primary>src/main.cpp</primary></indexterm>
+<para>
+
+<para>first file run by system </para>
+ 
+</para>
+<programlisting>#include &lt;Arduino.h&gt;
+#include &lt;PeregrineAltimeter.h&gt;
+</programlisting><simplesect>
+    <title>Functions    </title>
+        <itemizedlist>
+            <listitem><para>void <link linkend="_main_8cpp_1a4fc01d736fe50cf5b977f755b675f11d">setup</link> ()</para>
+</listitem>
+            <listitem><para>void <link linkend="_main_8cpp_1afe461d27b9c48d5921c00d521181f12f">loop</link> ()</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Variables    </title>
+        <itemizedlist>
+            <listitem><para><link linkend="_class_peregrine_altimeter">PeregrineAltimeter</link> <link linkend="_main_8cpp_1a2b2fd5602c1f10855b32a42e767cd08a">altimeter</link></para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>first file run by system </para>
+
+<para>Nothing really happens in this class. Main members are initialized and execution is handed off.</para>
+
+<para><formalpara><title>Author</title>
+
+<para>Jeremy Dunne</para>
+</formalpara>
+<formalpara><title>Version</title>
+
+<para>0.1</para>
+</formalpara>
+<formalpara><title>Date</title>
+
+<para>2021/01/04 </para>
+</formalpara>
+</para>
+</section>
+<section>
+<title>Function Documentation</title>
+<anchor xml:id="_main_8cpp_1afe461d27b9c48d5921c00d521181f12f"/>    <section>
+    <title>loop()</title>
+<indexterm><primary>loop</primary><secondary>main.cpp</secondary></indexterm>
+<indexterm><primary>main.cpp</primary><secondary>loop</secondary></indexterm>
+<para><computeroutput>void loop ( )</computeroutput></para>
+<para>loops indefinately </para>
+    </section><anchor xml:id="_main_8cpp_1a4fc01d736fe50cf5b977f755b675f11d"/>    <section>
+    <title>setup()</title>
+<indexterm><primary>setup</primary><secondary>main.cpp</secondary></indexterm>
+<indexterm><primary>main.cpp</primary><secondary>setup</secondary></indexterm>
+<para><computeroutput>void setup ( )</computeroutput></para>
+<para>called at the startup </para>
+</section>
+</section>
+<section>
+<title>Variable Documentation</title>
+<anchor xml:id="_main_8cpp_1a2b2fd5602c1f10855b32a42e767cd08a"/>    <section>
+    <title>altimeter</title>
+<indexterm><primary>altimeter</primary><secondary>main.cpp</secondary></indexterm>
+<indexterm><primary>main.cpp</primary><secondary>altimeter</secondary></indexterm>
+<para><computeroutput><link linkend="_class_peregrine_altimeter">PeregrineAltimeter</link> altimeter</computeroutput></para></section>
+</section>
+</section>

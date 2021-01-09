@@ -1,0 +1,169 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_class_serial_handler" xml:lang="en-US">
+<title>SerialHandler Class Reference</title>
+<indexterm><primary>SerialHandler</primary></indexterm>
+<para>
+<computeroutput>#include &lt;SerialHandler.h&gt;</computeroutput>
+</para>
+<simplesect>
+    <title>Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para><link linkend="__serial_handler_8h_1ac8fc6769fb61616f0fab5cf83d004290">SerialHandlerStatus_t</link> <link linkend="_class_serial_handler_1abf83df08af6422c067ac89cf9cf80134">begin</link> ()</para>
+</listitem>
+            <listitem><para><link linkend="__serial_handler_8h_1ac8fc6769fb61616f0fab5cf83d004290">SerialHandlerStatus_t</link> <link linkend="_class_serial_handler_1afc8c639f080b9e8fd40efe55ab8a508c">update</link> ()</para>
+</listitem>
+            <listitem><para><link linkend="__serial_handler_8h_1ac8fc6769fb61616f0fab5cf83d004290">SerialHandlerStatus_t</link> <link linkend="_class_serial_handler_1a5b0f7b8779c9ef89539f4f9ff19a5587">close</link> ()</para>
+</listitem>
+            <listitem><para><link linkend="__serial_handler_8h_1ac8fc6769fb61616f0fab5cf83d004290">SerialHandlerStatus_t</link> <link linkend="_class_serial_handler_1aecf3bc72eb2a75564ca0f4c8c32b0428">get_status</link> ()</para>
+</listitem>
+            <listitem><para><link linkend="__serial_handler_8h_1ac8fc6769fb61616f0fab5cf83d004290">SerialHandlerStatus_t</link> <link linkend="_class_serial_handler_1a2b3e97954efd7054dd89a40aea54b8a9">send_message</link> (byte *buffer, int length)</para>
+</listitem>
+            <listitem><para>int <link linkend="_class_serial_handler_1a671a2d5ac5325b74f9c0a4333fd0361b">get_message</link> (byte *buffer, int max_length)</para>
+</listitem>
+            <listitem><para>void <link linkend="_class_serial_handler_1a2f125f2ea41bf28f483d5c7300e57c77">send_connection_request</link> ()</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Member Function Documentation</title>
+<anchor xml:id="_class_serial_handler_1abf83df08af6422c067ac89cf9cf80134"/>    <section>
+    <title>begin()</title>
+<indexterm><primary>begin</primary><secondary>SerialHandler</secondary></indexterm>
+<indexterm><primary>SerialHandler</primary><secondary>begin</secondary></indexterm>
+<para><computeroutput><link linkend="__serial_handler_8h_1ac8fc6769fb61616f0fab5cf83d004290">SerialHandlerStatus_t</link> SerialHandler::begin ( )</computeroutput></para>
+<para>initialize serial communications</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>status code </para>
+</formalpara>
+</para>
+    </section><anchor xml:id="_class_serial_handler_1a5b0f7b8779c9ef89539f4f9ff19a5587"/>    <section>
+    <title>close()</title>
+<indexterm><primary>close</primary><secondary>SerialHandler</secondary></indexterm>
+<indexterm><primary>SerialHandler</primary><secondary>close</secondary></indexterm>
+<para><computeroutput><link linkend="__serial_handler_8h_1ac8fc6769fb61616f0fab5cf83d004290">SerialHandlerStatus_t</link> SerialHandler::close ( )</computeroutput></para>
+<para>close the serial communication (if opened)</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>status code </para>
+</formalpara>
+</para>
+    </section><anchor xml:id="_class_serial_handler_1a671a2d5ac5325b74f9c0a4333fd0361b"/>    <section>
+    <title>get_message()</title>
+<indexterm><primary>get_message</primary><secondary>SerialHandler</secondary></indexterm>
+<indexterm><primary>SerialHandler</primary><secondary>get_message</secondary></indexterm>
+<para><computeroutput>int SerialHandler::get_message (byte * buffer, int max_length)</computeroutput></para>
+<para>get the most recent serial message</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters                    </title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+                                <entry>buffer</entry>
+                                <entry>
+<para>to copy the contents into </para>
+</entry>
+                            </row>
+                            <row>
+                                <entry>max_length</entry>
+                                <entry>
+<para>maximum length of the buffer</para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>length of the message or -1 if the buffer was too small </para>
+</formalpara>
+</para>
+    </section><anchor xml:id="_class_serial_handler_1aecf3bc72eb2a75564ca0f4c8c32b0428"/>    <section>
+    <title>get_status()</title>
+<indexterm><primary>get_status</primary><secondary>SerialHandler</secondary></indexterm>
+<indexterm><primary>SerialHandler</primary><secondary>get_status</secondary></indexterm>
+<para><computeroutput><link linkend="__serial_handler_8h_1ac8fc6769fb61616f0fab5cf83d004290">SerialHandlerStatus_t</link> SerialHandler::get_status ( )<computeroutput>[inline]</computeroutput></computeroutput></para>
+<para>get the last status</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>status code </para>
+</formalpara>
+</para>
+    </section><anchor xml:id="_class_serial_handler_1a2f125f2ea41bf28f483d5c7300e57c77"/>    <section>
+    <title>send_connection_request()</title>
+<indexterm><primary>send_connection_request</primary><secondary>SerialHandler</secondary></indexterm>
+<indexterm><primary>SerialHandler</primary><secondary>send_connection_request</secondary></indexterm>
+<para><computeroutput>void SerialHandler::send_connection_request ( )</computeroutput></para>
+<para>attempt a connection</para>
+
+<para>does not wait until a connection is confirmed </para>
+    </section><anchor xml:id="_class_serial_handler_1a2b3e97954efd7054dd89a40aea54b8a9"/>    <section>
+    <title>send_message()</title>
+<indexterm><primary>send_message</primary><secondary>SerialHandler</secondary></indexterm>
+<indexterm><primary>SerialHandler</primary><secondary>send_message</secondary></indexterm>
+<para><computeroutput><link linkend="__serial_handler_8h_1ac8fc6769fb61616f0fab5cf83d004290">SerialHandlerStatus_t</link> SerialHandler::send_message (byte * buffer, int length)</computeroutput></para>
+<para>send a message over serial</para>
+
+<para>Handles communication handshake (length in first two bytes, checksum at end)</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters                    </title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+                                <entry>buffer</entry>
+                                <entry>
+<para>message to send </para>
+</entry>
+                            </row>
+                            <row>
+                                <entry>length</entry>
+                                <entry>
+<para>length of message to send</para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>status code </para>
+</formalpara>
+</para>
+    </section><anchor xml:id="_class_serial_handler_1afc8c639f080b9e8fd40efe55ab8a508c"/>    <section>
+    <title>update()</title>
+<indexterm><primary>update</primary><secondary>SerialHandler</secondary></indexterm>
+<indexterm><primary>SerialHandler</primary><secondary>update</secondary></indexterm>
+<para><computeroutput><link linkend="__serial_handler_8h_1ac8fc6769fb61616f0fab5cf83d004290">SerialHandlerStatus_t</link> SerialHandler::update ( )</computeroutput></para>
+<para>update the serial and check for messages</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>status code </para>
+</formalpara>
+</para>
+</section>
+<para>
+The documentation for this class was generated from the following files:</para>
+include/<link linkend="__serial_handler_8h">SerialHandler.h</link>src/<link linkend="__serial_handler_8cpp">SerialHandler.cpp</link></section>
+</section>

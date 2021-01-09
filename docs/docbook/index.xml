@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<book xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_index" xml:lang="en-US">
+    <info>
+    <title>PeregrineAltimeter</title>
+    </info>
+<chapter>
+    <title>Class Documentation</title>
+    <xi:include href="class_peregrine_altimeter.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="class_rocket_module.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="struct_rocket_state.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="class_serial_handler.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="class_telemetry_module.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+</chapter>
+<chapter>
+    <title>File Documentation</title>
+    <xi:include href="_communication_protocol_8h.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="_peregrine_altimeter_8h.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="_rocket_module_8h.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="_rocket_state_8h.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="_serial_handler_8h.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="_telemetry_module_8h.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="_r_e_a_d_m_e_8md.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="main_8cpp.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="_peregrine_altimeter_8cpp.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="_serial_handler_8cpp.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="_telemetry_module_8cpp.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+</chapter>
+<index/>
+</book>

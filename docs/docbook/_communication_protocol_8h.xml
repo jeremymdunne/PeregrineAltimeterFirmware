@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="__communication_protocol_8h" xml:lang="en-US">
+<title>include/CommunicationProtocol.h File Reference</title>
+<indexterm><primary>include/CommunicationProtocol.h</primary></indexterm>
+<para>
+
+<para>Contains all the standards needed for the communication protocol. </para>
+ 
+</para>
+<simplesect>
+    <title>Macros    </title>
+        <itemizedlist>
+            <listitem><para>#define <link linkend="__communication_protocol_8h_1aae380f9de73a3f6f180ef52dc231c132">COMMUNICATION_CONNECTION_REQUEST_FLAG</link>   11</para>
+
+<para>Standard Communication Flags. </para>
+</listitem>
+            <listitem><para>#define <link linkend="__communication_protocol_8h_1a60bb51f5d00a7a89417fa9de1b240b3a">COMMUNICATION_CONNECTION_SUCCESS_FLAG</link>   12</para>
+</listitem>
+            <listitem><para>#define <link linkend="__communication_protocol_8h_1a519eb85bae2d0c2de95111bcb8989099">COMMUNICATION_SEND_OK</link>   13</para>
+</listitem>
+            <listitem><para>#define <link linkend="__communication_protocol_8h_1aeb7c2f0f9447b879b1239b7397cac927">COMMUNICATION_RESEND_REQUEST</link>   14</para>
+</listitem>
+            <listitem><para>#define <link linkend="__communication_protocol_8h_1a40748130900e6bf97b3dbe2236aceb8b">COMMUNICATION_RESEND_UNABLE</link>   15</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Contains all the standards needed for the communication protocol. </para>
+
+<para>This file contains all the definitions needed for the communication protocol</para>
+
+<para><formalpara><title>Author</title>
+
+<para>Jeremy Dunne </para>
+</formalpara>
+</para>
+</section>
+<section>
+<title>Macro Definition Documentation</title>
+<anchor xml:id="__communication_protocol_8h_1aae380f9de73a3f6f180ef52dc231c132"/>    <section>
+    <title>COMMUNICATION_CONNECTION_REQUEST_FLAG</title>
+<indexterm><primary>COMMUNICATION_CONNECTION_REQUEST_FLAG</primary><secondary>CommunicationProtocol.h</secondary></indexterm>
+<indexterm><primary>CommunicationProtocol.h</primary><secondary>COMMUNICATION_CONNECTION_REQUEST_FLAG</secondary></indexterm>
+<para><computeroutput>#define COMMUNICATION_CONNECTION_REQUEST_FLAG   11</computeroutput></para><para>
+
+<para>Standard Communication Flags. </para>
+</para>
+    </section><anchor xml:id="__communication_protocol_8h_1a60bb51f5d00a7a89417fa9de1b240b3a"/>    <section>
+    <title>COMMUNICATION_CONNECTION_SUCCESS_FLAG</title>
+<indexterm><primary>COMMUNICATION_CONNECTION_SUCCESS_FLAG</primary><secondary>CommunicationProtocol.h</secondary></indexterm>
+<indexterm><primary>CommunicationProtocol.h</primary><secondary>COMMUNICATION_CONNECTION_SUCCESS_FLAG</secondary></indexterm>
+<para><computeroutput>#define COMMUNICATION_CONNECTION_SUCCESS_FLAG   12</computeroutput></para>    </section><anchor xml:id="__communication_protocol_8h_1aeb7c2f0f9447b879b1239b7397cac927"/>    <section>
+    <title>COMMUNICATION_RESEND_REQUEST</title>
+<indexterm><primary>COMMUNICATION_RESEND_REQUEST</primary><secondary>CommunicationProtocol.h</secondary></indexterm>
+<indexterm><primary>CommunicationProtocol.h</primary><secondary>COMMUNICATION_RESEND_REQUEST</secondary></indexterm>
+<para><computeroutput>#define COMMUNICATION_RESEND_REQUEST   14</computeroutput></para>    </section><anchor xml:id="__communication_protocol_8h_1a40748130900e6bf97b3dbe2236aceb8b"/>    <section>
+    <title>COMMUNICATION_RESEND_UNABLE</title>
+<indexterm><primary>COMMUNICATION_RESEND_UNABLE</primary><secondary>CommunicationProtocol.h</secondary></indexterm>
+<indexterm><primary>CommunicationProtocol.h</primary><secondary>COMMUNICATION_RESEND_UNABLE</secondary></indexterm>
+<para><computeroutput>#define COMMUNICATION_RESEND_UNABLE   15</computeroutput></para>    </section><anchor xml:id="__communication_protocol_8h_1a519eb85bae2d0c2de95111bcb8989099"/>    <section>
+    <title>COMMUNICATION_SEND_OK</title>
+<indexterm><primary>COMMUNICATION_SEND_OK</primary><secondary>CommunicationProtocol.h</secondary></indexterm>
+<indexterm><primary>CommunicationProtocol.h</primary><secondary>COMMUNICATION_SEND_OK</secondary></indexterm>
+<para><computeroutput>#define COMMUNICATION_SEND_OK   13</computeroutput></para></section>
+</section>
+</section>

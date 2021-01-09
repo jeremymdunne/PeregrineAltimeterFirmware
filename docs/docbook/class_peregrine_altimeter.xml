@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_class_peregrine_altimeter" xml:lang="en-US">
+<title>PeregrineAltimeter Class Reference</title>
+<indexterm><primary>PeregrineAltimeter</primary></indexterm>
+<para>
+<computeroutput>#include &lt;PeregrineAltimeter.h&gt;</computeroutput>
+</para>
+<simplesect>
+    <title>Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para>int <link linkend="_class_peregrine_altimeter_1a9faa1cb36e19a1891c6077d5f36a5946">run</link> ()</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Member Function Documentation</title>
+<anchor xml:id="_class_peregrine_altimeter_1a9faa1cb36e19a1891c6077d5f36a5946"/>    <section>
+    <title>run()</title>
+<indexterm><primary>run</primary><secondary>PeregrineAltimeter</secondary></indexterm>
+<indexterm><primary>PeregrineAltimeter</primary><secondary>run</secondary></indexterm>
+<para><computeroutput>int PeregrineAltimeter::run ( )</computeroutput></para>
+<para>run the altimeter</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>error or success code </para>
+</formalpara>
+</para>
+</section>
+<para>
+The documentation for this class was generated from the following files:</para>
+include/<link linkend="__peregrine_altimeter_8h">PeregrineAltimeter.h</link>src/<link linkend="__peregrine_altimeter_8cpp">PeregrineAltimeter.cpp</link></section>
+</section>

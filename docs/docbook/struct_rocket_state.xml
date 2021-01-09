@@ -1,0 +1,245 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_struct_rocket_state" xml:lang="en-US">
+<title>RocketState Struct Reference</title>
+<indexterm><primary>RocketState</primary></indexterm>
+<para>
+<computeroutput>#include &lt;RocketState.h&gt;</computeroutput>
+</para>
+<simplesect>
+    <title>Public Types    </title>
+        <itemizedlist>
+            <listitem><para>enum <link linkend="_struct_rocket_state_1ab4407f519ca26b2763e501fdbf23b556">FLIGHT_PHASE</link> { 
+<link linkend="_struct_rocket_state_1ab4407f519ca26b2763e501fdbf23b556abf3c684bb28e11cfbf6ffee7bc5117f4">WAITING_FOR_LAUNCH_PHASE</link>
+, <link linkend="_struct_rocket_state_1ab4407f519ca26b2763e501fdbf23b556ad8f0e01519b0f3c0ddd8421d6e612dd0">BOOST_PHASE</link>
+, <link linkend="_struct_rocket_state_1ab4407f519ca26b2763e501fdbf23b556a9fbbdf300db832b21bbb2e0ebcc87c6e">COAST_PHASE</link>
+, <link linkend="_struct_rocket_state_1ab4407f519ca26b2763e501fdbf23b556adaaca163df16766d8eb52d74e871b643">APOGEE_PHASE</link>
+, 
+<link linkend="_struct_rocket_state_1ab4407f519ca26b2763e501fdbf23b556ac0821706487524863a504eef19d04f20">RECOVERY_PHASE</link>
+, <link linkend="_struct_rocket_state_1ab4407f519ca26b2763e501fdbf23b556a776f4449a9fb1fa8c5b2e36000bc6e6a">LANDED_PHASE</link>
+ }</para>
+
+<para>enum that represents what part of the flight phase the rocket is in 
+<literallayout>&#160;&#xa;</literallayout>
+ </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Public Attributes    </title>
+        <itemizedlist>
+            <listitem><para>unsigned long <link linkend="_struct_rocket_state_1ad210dbaadbfead17eea11ef9983e6543">_sys_time</link></para>
+
+<para>system time according to start up in microsecond 
+<literallayout>&#160;&#xa;</literallayout>
+ </para>
+</listitem>
+            <listitem><para>unsigned long <link linkend="_struct_rocket_state_1ad151f4f3c6ffc3ee3e7a1bd90a1e9054">_flight_time</link></para>
+
+<para>time into flight in microseconds </para>
+</listitem>
+            <listitem><para>float <link linkend="_struct_rocket_state_1a47b4b2a3be5716c58a68a4515f9852fa">_pressure</link></para>
+
+<para>measured pressure in pascals </para>
+</listitem>
+            <listitem><para>float <link linkend="_struct_rocket_state_1a1e224a02279b9d4e5547d1a720cc4a21">_temperature</link></para>
+
+<para>measured temperature in celsius </para>
+</listitem>
+            <listitem><para>float <link linkend="_struct_rocket_state_1ae6694ef7a36a3dcff906629eea6b013f">_acceration</link> [3]</para>
+
+<para>measured accelleration in m/s/s, XYZ </para>
+</listitem>
+            <listitem><para>float <link linkend="_struct_rocket_state_1a4c34f96242190966e466f512d831354f">_rotation_rates</link> [3]</para>
+
+<para>measured rotation rates in deg/s, Roll, Pitch, Yaw </para>
+</listitem>
+            <listitem><para>float <link linkend="_struct_rocket_state_1a958744f58fd47201013e0a47146c50eb">_magnetic_strength</link> [3]</para>
+
+<para>measured in milliteslas, XYZ </para>
+</listitem>
+            <listitem><para>float <link linkend="_struct_rocket_state_1ae310495c3a31c8529209b512c496b84f">_fused_position</link> [3]</para>
+
+<para>fused position in m, XYZ </para>
+</listitem>
+            <listitem><para>float <link linkend="_struct_rocket_state_1a569ae9eec006bb5e6af7aa3365ad39b0">_fused_velocity</link> [3]</para>
+
+<para>estimated velocity in m/s, XYZ </para>
+</listitem>
+            <listitem><para>float <link linkend="_struct_rocket_state_1ad9b52d8a74172b039781e359b2cbd40a">_fused_acceleration</link> [3]</para>
+
+<para>fused acceleration in m/s/s, XYZ </para>
+</listitem>
+            <listitem><para>float <link linkend="_struct_rocket_state_1a4f2a1454032026aa5d3af2de2e19157a">_fused_attitude</link> [3]</para>
+
+<para>fused attitude in deg, XYZ </para>
+</listitem>
+            <listitem><para><link linkend="_struct_rocket_state_1ab4407f519ca26b2763e501fdbf23b556">FLIGHT_PHASE</link> <link linkend="_struct_rocket_state_1aff498ed9cd048396c1d95f4a34cae103">_flight_phase</link></para>
+
+<para>current flight phase of the rocket </para>
+</listitem>
+            <listitem><para>bool <link linkend="_struct_rocket_state_1abbeac07b499412832810316e45f6f509">_in_simulation_mode</link></para>
+
+<para>represents the simulation mode </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Member Enumeration Documentation</title>
+<anchor xml:id="_struct_rocket_state_1ab4407f519ca26b2763e501fdbf23b556"/>    <section>
+    <title>FLIGHT_PHASE</title>
+<indexterm><primary>FLIGHT_PHASE</primary><secondary>RocketState</secondary></indexterm>
+<indexterm><primary>RocketState</primary><secondary>FLIGHT_PHASE</secondary></indexterm>
+<para><computeroutput>enum <link linkend="_struct_rocket_state_1ab4407f519ca26b2763e501fdbf23b556">RocketState::FLIGHT_PHASE</link></computeroutput></para><para>
+
+<para>enum that represents what part of the flight phase the rocket is in 
+<literallayout>&#160;&#xa;</literallayout>
+ </para>
+</para>
+<informaltable frame="all">
+<title>Enumerator</title>
+    <tgroup cols="2" align="left" colsep="1" rowsep="1">
+      <colspec colname='c1'/>
+      <colspec colname='c2'/>
+<tbody>
+<row><entry><indexterm><primary>WAITING_FOR_LAUNCH_PHASE</primary><secondary>RocketState</secondary></indexterm>
+<indexterm><primary>RocketState</primary><secondary>WAITING_FOR_LAUNCH_PHASE</secondary></indexterm>
+<anchor xml:id="_struct_rocket_state_1ab4407f519ca26b2763e501fdbf23b556abf3c684bb28e11cfbf6ffee7bc5117f4"/>WAITING_FOR_LAUNCH_PHASE</entry><entry>
+<para>waiting for launch detection </para>
+</entry></row><row><entry><indexterm><primary>BOOST_PHASE</primary><secondary>RocketState</secondary></indexterm>
+<indexterm><primary>RocketState</primary><secondary>BOOST_PHASE</secondary></indexterm>
+<anchor xml:id="_struct_rocket_state_1ab4407f519ca26b2763e501fdbf23b556ad8f0e01519b0f3c0ddd8421d6e612dd0"/>BOOST_PHASE</entry><entry>
+<para>in boost phase (thrust detected) </para>
+</entry></row><row><entry><indexterm><primary>COAST_PHASE</primary><secondary>RocketState</secondary></indexterm>
+<indexterm><primary>RocketState</primary><secondary>COAST_PHASE</secondary></indexterm>
+<anchor xml:id="_struct_rocket_state_1ab4407f519ca26b2763e501fdbf23b556a9fbbdf300db832b21bbb2e0ebcc87c6e"/>COAST_PHASE</entry><entry>
+<para>in coast phase (thrust stopped, velocity still &gt; 0) </para>
+</entry></row><row><entry><indexterm><primary>APOGEE_PHASE</primary><secondary>RocketState</secondary></indexterm>
+<indexterm><primary>RocketState</primary><secondary>APOGEE_PHASE</secondary></indexterm>
+<anchor xml:id="_struct_rocket_state_1ab4407f519ca26b2763e501fdbf23b556adaaca163df16766d8eb52d74e871b643"/>APOGEE_PHASE</entry><entry>
+<para>apogee detected </para>
+</entry></row><row><entry><indexterm><primary>RECOVERY_PHASE</primary><secondary>RocketState</secondary></indexterm>
+<indexterm><primary>RocketState</primary><secondary>RECOVERY_PHASE</secondary></indexterm>
+<anchor xml:id="_struct_rocket_state_1ab4407f519ca26b2763e501fdbf23b556ac0821706487524863a504eef19d04f20"/>RECOVERY_PHASE</entry><entry>
+<para>descent detected </para>
+</entry></row><row><entry><indexterm><primary>LANDED_PHASE</primary><secondary>RocketState</secondary></indexterm>
+<indexterm><primary>RocketState</primary><secondary>LANDED_PHASE</secondary></indexterm>
+<anchor xml:id="_struct_rocket_state_1ab4407f519ca26b2763e501fdbf23b556a776f4449a9fb1fa8c5b2e36000bc6e6a"/>LANDED_PHASE</entry><entry>
+<para>landing detected </para>
+</entry></row>    </tbody>
+    </tgroup>
+</informaltable>
+</section>
+</section>
+<section>
+<title>Member Data Documentation</title>
+<anchor xml:id="_struct_rocket_state_1ae6694ef7a36a3dcff906629eea6b013f"/>    <section>
+    <title>_acceration</title>
+<indexterm><primary>_acceration</primary><secondary>RocketState</secondary></indexterm>
+<indexterm><primary>RocketState</primary><secondary>_acceration</secondary></indexterm>
+<para><computeroutput>float RocketState::_acceration[3]</computeroutput></para><para>
+
+<para>measured accelleration in m/s/s, XYZ </para>
+</para>
+    </section><anchor xml:id="_struct_rocket_state_1aff498ed9cd048396c1d95f4a34cae103"/>    <section>
+    <title>_flight_phase</title>
+<indexterm><primary>_flight_phase</primary><secondary>RocketState</secondary></indexterm>
+<indexterm><primary>RocketState</primary><secondary>_flight_phase</secondary></indexterm>
+<para><computeroutput><link linkend="_struct_rocket_state_1ab4407f519ca26b2763e501fdbf23b556">FLIGHT_PHASE</link> RocketState::_flight_phase</computeroutput></para><para>
+
+<para>current flight phase of the rocket </para>
+</para>
+    </section><anchor xml:id="_struct_rocket_state_1ad151f4f3c6ffc3ee3e7a1bd90a1e9054"/>    <section>
+    <title>_flight_time</title>
+<indexterm><primary>_flight_time</primary><secondary>RocketState</secondary></indexterm>
+<indexterm><primary>RocketState</primary><secondary>_flight_time</secondary></indexterm>
+<para><computeroutput>unsigned long RocketState::_flight_time</computeroutput></para><para>
+
+<para>time into flight in microseconds </para>
+</para>
+    </section><anchor xml:id="_struct_rocket_state_1ad9b52d8a74172b039781e359b2cbd40a"/>    <section>
+    <title>_fused_acceleration</title>
+<indexterm><primary>_fused_acceleration</primary><secondary>RocketState</secondary></indexterm>
+<indexterm><primary>RocketState</primary><secondary>_fused_acceleration</secondary></indexterm>
+<para><computeroutput>float RocketState::_fused_acceleration[3]</computeroutput></para><para>
+
+<para>fused acceleration in m/s/s, XYZ </para>
+</para>
+    </section><anchor xml:id="_struct_rocket_state_1a4f2a1454032026aa5d3af2de2e19157a"/>    <section>
+    <title>_fused_attitude</title>
+<indexterm><primary>_fused_attitude</primary><secondary>RocketState</secondary></indexterm>
+<indexterm><primary>RocketState</primary><secondary>_fused_attitude</secondary></indexterm>
+<para><computeroutput>float RocketState::_fused_attitude[3]</computeroutput></para><para>
+
+<para>fused attitude in deg, XYZ </para>
+</para>
+    </section><anchor xml:id="_struct_rocket_state_1ae310495c3a31c8529209b512c496b84f"/>    <section>
+    <title>_fused_position</title>
+<indexterm><primary>_fused_position</primary><secondary>RocketState</secondary></indexterm>
+<indexterm><primary>RocketState</primary><secondary>_fused_position</secondary></indexterm>
+<para><computeroutput>float RocketState::_fused_position[3]</computeroutput></para><para>
+
+<para>fused position in m, XYZ </para>
+</para>
+    </section><anchor xml:id="_struct_rocket_state_1a569ae9eec006bb5e6af7aa3365ad39b0"/>    <section>
+    <title>_fused_velocity</title>
+<indexterm><primary>_fused_velocity</primary><secondary>RocketState</secondary></indexterm>
+<indexterm><primary>RocketState</primary><secondary>_fused_velocity</secondary></indexterm>
+<para><computeroutput>float RocketState::_fused_velocity[3]</computeroutput></para><para>
+
+<para>estimated velocity in m/s, XYZ </para>
+</para>
+    </section><anchor xml:id="_struct_rocket_state_1abbeac07b499412832810316e45f6f509"/>    <section>
+    <title>_in_simulation_mode</title>
+<indexterm><primary>_in_simulation_mode</primary><secondary>RocketState</secondary></indexterm>
+<indexterm><primary>RocketState</primary><secondary>_in_simulation_mode</secondary></indexterm>
+<para><computeroutput>bool RocketState::_in_simulation_mode</computeroutput></para><para>
+
+<para>represents the simulation mode </para>
+</para>
+    </section><anchor xml:id="_struct_rocket_state_1a958744f58fd47201013e0a47146c50eb"/>    <section>
+    <title>_magnetic_strength</title>
+<indexterm><primary>_magnetic_strength</primary><secondary>RocketState</secondary></indexterm>
+<indexterm><primary>RocketState</primary><secondary>_magnetic_strength</secondary></indexterm>
+<para><computeroutput>float RocketState::_magnetic_strength[3]</computeroutput></para><para>
+
+<para>measured in milliteslas, XYZ </para>
+</para>
+    </section><anchor xml:id="_struct_rocket_state_1a47b4b2a3be5716c58a68a4515f9852fa"/>    <section>
+    <title>_pressure</title>
+<indexterm><primary>_pressure</primary><secondary>RocketState</secondary></indexterm>
+<indexterm><primary>RocketState</primary><secondary>_pressure</secondary></indexterm>
+<para><computeroutput>float RocketState::_pressure</computeroutput></para><para>
+
+<para>measured pressure in pascals </para>
+</para>
+    </section><anchor xml:id="_struct_rocket_state_1a4c34f96242190966e466f512d831354f"/>    <section>
+    <title>_rotation_rates</title>
+<indexterm><primary>_rotation_rates</primary><secondary>RocketState</secondary></indexterm>
+<indexterm><primary>RocketState</primary><secondary>_rotation_rates</secondary></indexterm>
+<para><computeroutput>float RocketState::_rotation_rates[3]</computeroutput></para><para>
+
+<para>measured rotation rates in deg/s, Roll, Pitch, Yaw </para>
+</para>
+    </section><anchor xml:id="_struct_rocket_state_1ad210dbaadbfead17eea11ef9983e6543"/>    <section>
+    <title>_sys_time</title>
+<indexterm><primary>_sys_time</primary><secondary>RocketState</secondary></indexterm>
+<indexterm><primary>RocketState</primary><secondary>_sys_time</secondary></indexterm>
+<para><computeroutput>unsigned long RocketState::_sys_time</computeroutput></para><para>
+
+<para>system time according to start up in microsecond 
+<literallayout>&#160;&#xa;</literallayout>
+ </para>
+</para>
+    </section><anchor xml:id="_struct_rocket_state_1a1e224a02279b9d4e5547d1a720cc4a21"/>    <section>
+    <title>_temperature</title>
+<indexterm><primary>_temperature</primary><secondary>RocketState</secondary></indexterm>
+<indexterm><primary>RocketState</primary><secondary>_temperature</secondary></indexterm>
+<para><computeroutput>float RocketState::_temperature</computeroutput></para><para>
+
+<para>measured temperature in celsius </para>
+</para>
+</section>
+<para>
+The documentation for this struct was generated from the following file:</para>
+include/<link linkend="__rocket_state_8h">RocketState.h</link></section>
+</section>

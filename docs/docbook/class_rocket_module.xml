@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_class_rocket_module" xml:lang="en-US">
+<title>RocketModule Class Reference</title>
+<indexterm><primary>RocketModule</primary></indexterm>
+<para>
+<computeroutput>#include &lt;RocketModule.h&gt;</computeroutput>
+</para>
+<simplesect>
+    <title>Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para>int <link linkend="_class_rocket_module_1a8890665693455de0b1976adce6b1b438">begin</link> (<link linkend="_struct_rocket_state">RocketState</link> *state)</para>
+</listitem>
+            <listitem><para>int <link linkend="_class_rocket_module_1a8eeccec61c555c7a4a6937f1c3708c1c">update</link> ()</para>
+</listitem>
+            <listitem><para>int <link linkend="_class_rocket_module_1af3a94ed5bd83095e3ff84bb6d0ea3fdc">stop</link> ()</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Member Function Documentation</title>
+<anchor xml:id="_class_rocket_module_1a8890665693455de0b1976adce6b1b438"/>    <section>
+    <title>begin()</title>
+<indexterm><primary>begin</primary><secondary>RocketModule</secondary></indexterm>
+<indexterm><primary>RocketModule</primary><secondary>begin</secondary></indexterm>
+<para><computeroutput>int RocketModule::begin (<link linkend="_struct_rocket_state">RocketState</link> * state)</computeroutput></para>
+<para>initialize the module</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters                    </title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+                                <entry>state</entry>
+                                <entry>
+<para>pointer to the state of the rocket </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>error or success code </para>
+</formalpara>
+</para>
+    </section><anchor xml:id="_class_rocket_module_1af3a94ed5bd83095e3ff84bb6d0ea3fdc"/>    <section>
+    <title>stop()</title>
+<indexterm><primary>stop</primary><secondary>RocketModule</secondary></indexterm>
+<indexterm><primary>RocketModule</primary><secondary>stop</secondary></indexterm>
+<para><computeroutput>int RocketModule::stop ( )</computeroutput></para>
+<para>stop the module, allow the module to shutdown successfully</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>error or success code </para>
+</formalpara>
+</para>
+    </section><anchor xml:id="_class_rocket_module_1a8eeccec61c555c7a4a6937f1c3708c1c"/>    <section>
+    <title>update()</title>
+<indexterm><primary>update</primary><secondary>RocketModule</secondary></indexterm>
+<indexterm><primary>RocketModule</primary><secondary>update</secondary></indexterm>
+<para><computeroutput>int RocketModule::update ( )</computeroutput></para>
+<para>update the module as necessary</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>error or status code </para>
+</formalpara>
+</para>
+</section>
+<para>
+The documentation for this class was generated from the following file:</para>
+include/<link linkend="__rocket_module_8h">RocketModule.h</link></section>
+</section>

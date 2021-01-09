@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_dir_d44c64559bbebec7f509842c48db8b23" xml:lang="en-US">
+<title>include Directory Reference</title>
+<indexterm><primary>include Directory Reference</primary></indexterm>
+<simplesect>
+    <title>Files    </title>
+        <itemizedlist>
+            <listitem><para>file <link linkend="__communication_protocol_8h">CommunicationProtocol.h</link></para>
+
+<para>Contains all the standards needed for the communication protocol. </para>
+</listitem>
+            <listitem><para>file <link linkend="__peregrine_altimeter_8h">PeregrineAltimeter.h</link></para>
+
+<para>Main control program for the altimeter. </para>
+</listitem>
+            <listitem><para>file <link linkend="__rocket_module_8h">RocketModule.h</link></para>
+
+<para>Template for rocket modules requiring access to the vehicle&apos;s state. </para>
+</listitem>
+            <listitem><para>file <link linkend="__rocket_state_8h">RocketState.h</link></para>
+
+<para>struct containing all information about the state of the rocket </para>
+</listitem>
+            <listitem><para>file <link linkend="__serial_handler_8h">SerialHandler.h</link></para>
+
+<para>Handles serial communication. </para>
+</listitem>
+            <listitem><para>file <link linkend="__telemetry_module_8h">TelemetryModule.h</link></para>
+
+<para>Module that handles telemetry of the altimeter. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+</section>
