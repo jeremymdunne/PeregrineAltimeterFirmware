@@ -14,6 +14,7 @@
 #include <RocketState.h> 
 #include <SerialHandler.h> 
 #include <UpdateTimer.h> 
+#include <CommunicationProtocol.h> 
 
 /// Enum containing all possible responses made by the system 
 typedef enum {
@@ -25,6 +26,18 @@ typedef enum {
     TELEMETRY_MODULE_UNKOWN_FAIL,                       ///< Unkown failure 
 
 }   TelemetryModuleStatus_t; 
+
+/// Enum for message mediums 
+typedef enum{
+    TELEMETRY_SERIAL = 0,                               ///< Send data through Serial 
+    TELEMETRY_RADIO,                                    ///< Send data through Radio 
+    TELEMETRY_ALL                                       ///< Send data through all communication mediums 
+}   TelemetryMessageMedium_t; 
+
+typedef enum{
+    TELEMETRY_VERBOSE_MESSAGE = 0,                      ///< Verbose message 
+    TELEMTERY_ERROR_MESSAGE                            ///< Error Message
+}   TelemetryStringMessageType_t;  
 
 class TelemetryModule{
 public: 
@@ -49,6 +62,16 @@ public:
      * @return error or success code 
      */ 
     TelemetryModuleStatus_t stop(); 
+
+    /**
+     * send a verbose message 
+     * 
+     * @param buffer message buffer
+     * @param length length of the message
+     * @param msg_type type of message to send 
+     * @param medium medium to send the message through 
+     */ 
+    TelemetryModuleStatus_t send_verbose_string(char * buffer, int length, TelemetryMessageMedium_t medium = TELEMETRY_SERIAL); 
 
 private: 
     TelemetryModuleStatus_t _status;            ///< Most recent status 

@@ -19,7 +19,8 @@
 
 
 /// Data Specific Flags 
-
+#define COMMUNICATION_VERBOSE_MESSAGE_FLAG                      30          //< Communication Verbose Message (interpret as string)
+#define COMMUNICATION_ERROR_MESSAGE_FLAG                        31          //< Communication Error Message (interpret as string)
 
 
 

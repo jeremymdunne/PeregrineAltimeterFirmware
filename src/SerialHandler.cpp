@@ -38,16 +38,15 @@ SerialHandlerStatus_t SerialHandler::update(){
 
 SerialHandlerStatus_t SerialHandler::send_message(byte * buffer, int length){
     // encode the length in the first two bytes 
-    // add 1 to length for the checksum 
-    length ++; 
-    byte length1 = (byte)(length >> 8); 
-    byte length2 = (byte)length; 
+    int msg_length = length + 1; // one extra for the checksum 
+    byte length1 = (byte)(msg_length >> 8); 
+    byte length2 = (byte)msg_length; 
     // write the header  
     SERIAL_HANDLER_SOURCE.write(length1); 
     SERIAL_HANDLER_SOURCE.write(length2);
     // place holder for checksum 
     // checksum includes the length bytes 
-    unsigned long sum = length1 + length2; // for larger messages, long instead of int 
+    unsigned long sum = 0; // for larger messages, long instead of int 
     for(int i = 0; i < length; i++){
         sum += buffer[i]; // add for the checksum 
         SERIAL_HANDLER_SOURCE.write(buffer[i]); // write the buffer element 
