@@ -23,5 +23,17 @@
 #define COMMUNICATION_ERROR_MESSAGE_FLAG                        31          //< Communication Error Message (interpret as string)
 
 
+// data request flags 
+#define COMMUNICATION_REQUEST_FILE_LIST_FLAG                    40          //< Request for the file list 
+// request response as follows 
+#define COMMUNICATION_FILE_LIST_FLAG                            41          //< Response for the communication file list request 
+/*
+format as follows: 
+    NUM_FILES (1 byte): Number of files available 
+    loop for each available file: 
+        FILE_PAGE_LENGTH (2 bytes): Number of pages (256 bytes) available  
+
+*/ 
+
 
 #endif 
