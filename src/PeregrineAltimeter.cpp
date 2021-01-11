@@ -33,4 +33,7 @@ int PeregrineAltimeter::init_modules(){
         _telemetry.light_error_led();
     }
     return 0; 
+
+    KinematicsStatus_t kin_status = _kinematics.begin(&_state);
+    
 }

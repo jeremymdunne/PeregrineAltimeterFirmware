@@ -14,6 +14,7 @@
 #include <Arduino.h> 
 #include <RocketState.h> 
 #include <TelemetryModule.h> 
+#include <Kinematics.h> 
 
 class PeregrineAltimeter{
 public: 
@@ -26,6 +27,7 @@ public:
 private: 
     RocketState _state;             ///< Main state of the rocket 
     TelemetryModule _telemetry;     ///< Telemetry Module 
+    Kinematics _kinematics;         ///< Kinematic Module 
     
     /**
      * initialize the altimeter and all modules 
