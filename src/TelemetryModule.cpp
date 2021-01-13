@@ -11,10 +11,32 @@ TelemetryModuleStatus_t TelemetryModule::begin(RocketState *state){
     return _status; 
 }
 
-TelemetryModuleStatus_t TelemetryModule::update(){
-    // for now, just update the serial handler 
-    _serial_handler.update(); 
+TelemetryModuleStatus_t TelemetryModule::start_recording(){
+    // open a file to record 
+    int flash_status = _flash_storage.open_file_write();  // TODO check the status code 
+    // start the timers 
+    _general_flight_data_timer.set_timer_frequency(DATA_RECORDING_GENERAL_FLIGHT_DATA_FREQUENCY); 
+    _general_flight_data_timer.start_timer(); 
+    // TODO add other timers here 
     return TELEMETRY_MODULE_OK; 
+}
+
+TelemetryModuleStatus_t TelemetryModule::update(){
+    // first update timers 
+
+    _serial_handler.update(); 
+
+
+    return TELEMETRY_MODULE_OK; 
+}
+
+TelemetryModuleStatus_t TelemetryModule::update_storage_data(){
+    // check all timers 
+    if(_general_flight_data_timer.update() == UPDATE_TIMER_UPDATE_AVAILABLE){
+        // encode the data and store it 
+        struct StorableData general_data = {STORAGE_GENERAL_FLIGHT_STORAGE_FLAG, _rocket_state->_flight_time, STORAGE_GENERAL_FLIGHT_STORAGE_LENGTH, byte buffer[STORAGE_GENERAL_FLIGHT_STORAGE_LENGTH]; 
+        general_data.data_flag = STORAGE_GENERAL_FLIGHT_STORAGE_FLAG
+    }
 }
 
 TelemetryModuleStatus_t TelemetryModule::send_verbose_string(char * buffer, int length, TelemetryMessageMedium_t medium){
@@ -109,4 +131,99 @@ TelemetryModuleStatus_t TelemetryModule::initialize_flash_storage(){
 void TelemetryModule::light_error_led(){
     pinMode(HEART_BEAT_LED, OUTPUT); 
     digitalWrite(HEART_BEAT_LED, LOW); 
+}
+
+
+TelemetryModuleStatus_t TelemetryModule::store_data(StorableData *data){
+    // TODO check if the flash storage is actually in write mode 
+    // write the data to the storage 
+    // construct the buffer to be directly written to storage 
+    byte buffer[STORAGE_DATA_HEADER_LENGTH + data->length]; 
+    // handle storing time loops 
+    while(_last_time_update + 65536 < data->time_stamp){
+        // store a time loop 
+        store_time_loop(); 
+        _last_time_update += 65536; 
+    }
+    // encode the header 
+    encode_header(data->data_flag, data->time_stamp - _last_time_update, data->length, buffer); 
+    // write the rest of the message 
+    memcpy(&buffer[STORAGE_DATA_HEADER_LENGTH], data->data, data->length); 
+    // write to storage 
+    _flash_storage.write(buffer, STORAGE_DATA_HEADER_LENGTH + data->length)
+    return TELEMETRY_MODULE_OK; 
+}
+
+void TelemetryModule::encode_header(int flag, unsigned long time_stamp, int data_length, byte * buff){
+    buff[0] = flag; 
+    buff[1] = (byte)(time_stamp >> 8);
+    buff[2] = (byte)(time_stamp);
+    buff[3] = (byte)(data_length);   
+}
+
+void TelemetryModule::store_time_loop(){
+    // construct the message 
+    byte buff[STORAGE_DATA_HEADER_LENGTH]; 
+    encode_header(STORAGE_TIME_LOOP_FLAG, 0, 0, buff); 
+    // write the message 
+    _flash_storage.write(buff, STORAGE_DATA_HEADER_LENGTH); 
+}
+
+
+void TelemetryModule::encode_general_flight_data(StorableData *data){
+    // encode based on the data 
+    int pntr = 0; 
+    // accel 
+    for(int i = 0; i < 3; i ++){
+        convert_float_to_bytes(_rocket_state->_acceration[i], &data->data[pntr], STORAGE_GENERAL_FLIGHT_ACCEL_RESOLUTION, STORAGE_GENERAL_FLIGHT_ACCEL_BYTE_SIZE, STORAGE_GENERAL_FLIGHT_ACCEL_MAX_VALUE, STORAGE_GENERAL_FLIGHT_ACCEL_MIN_VALUE);  
+        pntr += STORAGE_GENERAL_FLIGHT_ACCEL_BYTE_SIZE; 
+    }
+    // gyro 
+    for(int i = 0; i < 3; i ++){
+        convert_float_to_bytes(_rocket_state->_rotation_rates[i], &data->data[pntr], STORAGE_GENERAL_FLIGHT_GYRO_RESOLUTION, STORAGE_GENERAL_FLIGHT_GYRO_BYTE_SIZE, STORAGE_GENERAL_FLIGHT_GYRO_MAX_VALUE, STORAGE_GENERAL_FLIGHT_GYRO_MIN_VALUE);  
+        pntr += STORAGE_GENERAL_FLIGHT_GYRO_BYTE_SIZE; 
+    }
+    // mag 
+    for(int i = 0; i < 3; i ++){
+        convert_float_to_bytes(_rocket_state->_magnetic_strength[i], &data->data[pntr], STORAGE_GENERAL_FLIGHT_MAG_RESOLUTION, STORAGE_GENERAL_FLIGHT_MAG_BYTE_SIZE, STORAGE_GENERAL_FLIGHT_MAG_MAX_VALUE, STORAGE_GENERAL_FLIGHT_MAG_MIN_VALUE);  
+        pntr += STORAGE_GENERAL_FLIGHT_MAG_BYTE_SIZE; 
+    }
+    // pressure 
+    convert_float_to_bytes(_rocket_state->_pressure, &data->data[pntr], STORAGE_GENERAL_FLIGHT_PRESSURE_RESOLUTION, STORAGE_GENERAL_FLIGHT_PRESSURE_BYTE_SIZE, STORAGE_GENERAL_FLIGHT_PRESSURE_MAX_VALUE, STORAGE_GENERAL_FLIGHT_PRESSURE_MIN_VALUE);
+    pntr += STORAGE_GENERAL_FLIGHT_PRESSURE_BYTE_SIZE; 
+    // temperature 
+    convert_float_to_bytes(_rocket_state->_temperature, &data->data[pntr], STORAGE_GENERAL_FLIGHT_TEMPERATURE_RESOLUTION, STORAGE_GENERAL_FLIGHT_TEMPERATURE_BYTE_SIZE, STORAGE_GENERAL_FLIGHT_TEMPERATURE_MAX_VALUE, STORAGE_GENERAL_FLIGHT_TEMPERATURE_MIN_VALUE);
+    pntr += STORAGE_GENERAL_FLIGHT_TEMPERATURE_BYTE_SIZE; 
+    // altitude  
+    convert_float_to_bytes(_rocket_state->_fused_position[2], &data->data[pntr], STORAGE_GENERAL_FLIGHT_ALT_RESOLUTION, STORAGE_GENERAL_FLIGHT_ALT_BYTE_SIZE, STORAGE_GENERAL_FLIGHT_ALT_MAX_VALUE, STORAGE_GENERAL_FLIGHT_ALT_MIN_VALUE);
+    pntr += STORAGE_GENERAL_FLIGHT_ALT_BYTE_SIZE; 
+    // velocity 
+    convert_float_to_bytes(_rocket_state->_fused_velocity[2], &data->data[pntr], STORAGE_GENERAL_FLIGHT_VEL_RESOLUTION, STORAGE_GENERAL_FLIGHT_VEL_BYTE_SIZE, STORAGE_GENERAL_FLIGHT_VEL_MAX_VALUE, STORAGE_GENERAL_FLIGHT_VEL_MIN_VALUE);
+    pntr += STORAGE_GENERAL_FLIGHT_VEL_BYTE_SIZE; 
+}
+
+void TelemetryModule::convert_float_to_bytes(float data, byte * buff, float resolution, int byte_size, float max_value, float min_value){
+    // first check the data is in range 
+    if(data > max_value) data = max_value; 
+    else if(data < min_value) data = min_value; 
+    // convert to dist from min 
+    data = data - min_value; 
+    // scale 
+    unsigned long value = 0.5 + data / resolution; 
+    // store in the buffer 
+    for(int i = 0; i < byte_size; i ++){
+        buff[i] = (byte)(value >> (8 * (byte_size - i - 1)));  
+    } 
+}
+
+float TelemetryModule::convert_to_float(byte * buff, float resolution, int byte_size, float min_value){
+    // construct the value 
+    unsigned long value_raw = 0; 
+    for(int i = 0; i < byte_size; i ++){
+        value_raw += buff[i] << 8 * (byte_size - 1 - i); 
+    }
+    // convert to float 
+    float data = value_raw * resolution; 
+    // add min value 
+    return data + min_value; 
 }

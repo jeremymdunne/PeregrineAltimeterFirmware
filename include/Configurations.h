@@ -11,6 +11,11 @@
 #ifndef _CONFIGURATIONS_H_
 #define _CONFIGURATIONS_H_
 
+// Data recording frequencies 
+#define DATA_RECORDING_GENERAL_FLIGHT_DATA_FREQUENCY 10 
+
+
+// Sensor update frequencies 
 #define SENSOR_IMU_UPDATE_FREQ          100 
 #define SENSOR_BMP_UPDATE_FREQ          20 
 

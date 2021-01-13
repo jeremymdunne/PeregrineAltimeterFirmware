@@ -17,6 +17,7 @@
 #include <SerialHandler.h> 
 #include <UpdateTimer.h> 
 #include <CommunicationProtocol.h> 
+#include <FlightRecordingProtocol.h> 
 #include <JFAT.h> 
 #include <HardwareDefs.h>
 
@@ -53,6 +54,14 @@ public:
      * @return error or success code 
      */ 
     TelemetryModuleStatus_t begin(RocketState *state);
+
+    /** 
+     * start recording data 
+     * opens a file in the flash storage 
+     * starts all timers for data storage 
+     * @return status code
+     */ 
+    TelemetryModuleStatus_t start_recording(); 
 
     /**
      * update the telemetry module 
@@ -120,15 +129,6 @@ public:
      */ 
     void delete_all_files(); 
 
-
-private: 
-    TelemetryModuleStatus_t _status;            ///< Most recent status 
-    
-    RocketState *_rocket_state;                 ///< Pointer to the state of the Rocket 
-    SerialHandler _serial_handler;              ///< SerialHandler object to handle serial communication 
-    JFAT _flash_storage;                        ///< JFAT object to handle flash storage interaction 
-    UpdateTimer _general_flight_data_timer;     ///< Timer for the general flight data updates 
-
     /**
      * get the most recent status of the TelemetryModule
      * 
@@ -138,6 +138,50 @@ private:
         return _status; 
     } 
 
+    
+    /**
+     * write a storable data 
+     * also handles looping time 
+     * this function must be used for all data storage callouts 
+     * 
+     * @param storable data structure to store 
+     * @return status code
+     */
+    TelemetryModuleStatus_t store_data(StorableData * data); 
+
+
+
+private: 
+    TelemetryModuleStatus_t _status;            ///< Most recent status 
+    
+    RocketState *_rocket_state;                 ///< Pointer to the state of the Rocket 
+    SerialHandler _serial_handler;              ///< SerialHandler object to handle serial communication 
+    JFAT _flash_storage;                        ///< JFAT object to handle flash storage interaction 
+    unsigned long _last_time_update = 0;         ///< Last time an time loop was stored 
+    
+    // data storage timers 
+    UpdateTimer _general_flight_data_timer;     ///< Timer for the general flight data updates 
+
+    /**
+     * update all storage timers 
+     * @return status code 
+     */ 
+    TelemetryModuleStatus_t update_storage_data(); 
+
+    /**
+     * store a time loop flag 
+     */ 
+    void store_time_loop(); 
+
+    /**
+     * encode a header sequence 
+     * @param flag data flag 
+     * @param time_stamp time stamp (must be < 2 ^ 16)
+     * @param data_length length of the data following the message 
+     * @param buff buffer to store the header data in 
+     */ 
+    void encode_header(int flag, unsigned long time_stamp, int data_length, byte * buff);  
+
     /**
      * initalize the flash storage 
      * create the required file format if not found 
@@ -145,6 +189,32 @@ private:
      * @return status code 
      */ 
     TelemetryModuleStatus_t initialize_flash_storage();     
+
+    /**
+     * encode general flight data 
+     * 
+     */ 
+    void encode_general_flight_data(StorableData *data); 
+
+    /**
+     * scale and store data to a byte format 
+     * @param data data to encode 
+     * @param buff buffer to encode to 
+     * @param resoultion resolutino to encode by 
+     * @param byte_size size (in bytes) to encode by 
+     * @param max_value maximum value 
+     * @param min_value minimum value 
+     */ 
+    void convert_float_to_bytes(float data, byte * buff, float resolution, int byte_size, float max_value, float min_value); 
+
+    /**
+     * convert to float 
+     * @param buff buff to convert 
+     * @param resolution resolution of the data 
+     * @param byte_size size of the data 
+     * @param min_value min value of the data 
+     */ 
+    float convert_to_float(byte * buff, float resolution, int byte_size, float min_value); 
 
 
 
