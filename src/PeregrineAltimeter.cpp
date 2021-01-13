@@ -19,7 +19,9 @@ int PeregrineAltimeter::run(){
     // send the message in a loop 
     while(true){
         delay(2000); 
+        _telemetry.update(); 
         _telemetry.send_file_list(); 
+       
     }
     return 0; 
 }

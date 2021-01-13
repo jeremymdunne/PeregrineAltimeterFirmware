@@ -11,6 +11,12 @@ TelemetryModuleStatus_t TelemetryModule::begin(RocketState *state){
     return _status; 
 }
 
+TelemetryModuleStatus_t TelemetryModule::update(){
+    // for now, just update the serial handler 
+    _serial_handler.update(); 
+    return TELEMETRY_MODULE_OK; 
+}
+
 TelemetryModuleStatus_t TelemetryModule::send_verbose_string(char * buffer, int length, TelemetryMessageMedium_t medium){
     // send the string through the medium 
     switch(medium){

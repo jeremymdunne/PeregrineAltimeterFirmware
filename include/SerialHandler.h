@@ -45,6 +45,8 @@ public:
     /**
      * update the serial and check for messages 
      * 
+     * if serial is not connected, will attempt a connection 
+     * 
      * @return status code 
      */ 
     SerialHandlerStatus_t update(); 
@@ -94,7 +96,7 @@ public:
 
 
 private: 
-    SerialHandlerStatus_t _status;                                       //< Last status 
+    SerialHandlerStatus_t _status;                                      //< Last status 
     bool _connected = false;                                            //< current connection status 
     byte _receive_buffer[SERIAL_HANDLER_RECIEVE_BUFFER_LENGTH];         //< receive buffer to store data into   
     unsigned int _receive_buffer_index = 0;  

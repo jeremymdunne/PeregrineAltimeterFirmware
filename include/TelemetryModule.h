@@ -123,6 +123,7 @@ public:
 
 private: 
     TelemetryModuleStatus_t _status;            ///< Most recent status 
+    
     RocketState *_rocket_state;                 ///< Pointer to the state of the Rocket 
     SerialHandler _serial_handler;              ///< SerialHandler object to handle serial communication 
     JFAT _flash_storage;                        ///< JFAT object to handle flash storage interaction 

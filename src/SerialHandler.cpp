@@ -28,11 +28,20 @@ SerialHandlerStatus_t SerialHandler::update(){
             return _status; 
         }
         else if(resp == SERIAL_HANDLER_OK){
+            // check the code for a connection request 
+            if(_receive_buffer[3] == COMMUNICATION_CONNECTION_SUCCESS_FLAG){
+                // update the state 
+                _connected = true; 
+                _status = SERIAL_HANDLER_OK; 
+                return _status; 
+            }
+            
             _message_avail = true;
             _status = SERIAL_HANDLER_MESSAGE_AVAILABLE; 
             return _status; 
         }
     }
+    if(!_connected) send_connection_request(); // attempt to connect with the host 
     return _status; 
 }
 
@@ -46,7 +55,7 @@ SerialHandlerStatus_t SerialHandler::send_message(byte * buffer, int length){
     SERIAL_HANDLER_SOURCE.write(length2);
     // place holder for checksum 
     // checksum includes the length bytes 
-    unsigned long sum = 0; // for larger messages, long instead of int 
+    unsigned long sum = length1 + length2; // for larger messages, long instead of int 
     for(int i = 0; i < length; i++){
         sum += buffer[i]; // add for the checksum 
         SERIAL_HANDLER_SOURCE.write(buffer[i]); // write the buffer element 
@@ -169,4 +178,10 @@ void SerialHandler::request_resend(){
     // construct the simple message 
     byte resend_command = COMMUNICATION_RESEND_REQUEST; 
     send_message(&resend_command, 1); 
+}
+
+void SerialHandler::send_connection_request(){
+    // write a connection attempt 
+    byte request = COMMUNICATION_CONNECTION_REQUEST_FLAG; 
+    send_message(&request, 1);  
 }
