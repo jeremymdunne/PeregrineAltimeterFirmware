@@ -4,6 +4,8 @@
 int PeregrineAltimeter::run(){
     // main function of the altimeter 
     init_modules(); 
+
+
     _telemetry.light_error_led();
     // Testing purposes, send out strings 
     char buffer[] = "Hello, World!"; 
@@ -17,8 +19,21 @@ int PeregrineAltimeter::run(){
         else cntr ++; 
     }
     // send the message in a loop 
+    _telemetry.start_recording(); 
+    // run for a bit 
+    long start = millis(); 
+    while(millis() - start < 10000){
+        _kinematics.update(); 
+        _telemetry.update(); 
+    }
+    // stop the telemetry to let it store the data 
+    _telemetry.stop(); 
+    _telemetry.send_file_list(); 
+    _telemetry.send_last_file(); 
+    return 0; 
     while(true){
         delay(2000); 
+        _kinematics.update(); 
         _telemetry.update(); 
         _telemetry.send_file_list(); 
        
@@ -34,8 +49,7 @@ int PeregrineAltimeter::init_modules(){
     if(stat != TELEMETRY_MODULE_OK){
         _telemetry.light_error_led();
     }
-    return 0; 
-
     KinematicsStatus_t kin_status = _kinematics.begin(&_state);
     
+    return 0; 
 }

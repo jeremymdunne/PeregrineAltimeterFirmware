@@ -36,6 +36,20 @@ TelemetryModuleStatus_t TelemetryModule::start_recording(){
     return TELEMETRY_MODULE_OK; 
 }
 
+void TelemetryModule::send_last_file(){
+    // get the last file 
+    JFAT::FileList list; 
+    _flash_storage.read_fat(&list); 
+    if(list.page_length[list.num_files-1] > 0){
+        // recall this file 
+        recall_file(list.num_files - 1); 
+        return; 
+    }
+    // write an error message 
+    char msg[] = {"LAST FILE HAD NO LENGTH, NOT SENDING CONTENTS"}; 
+    send_verbose_string(msg, 25); 
+}
+
 TelemetryModuleStatus_t TelemetryModule::update(){
     if(_storage_state == STORAGE_STORE_DATA){
         // first update timers 
@@ -263,6 +277,20 @@ TelemetryModuleStatus_t TelemetryModule::recall_file(int fd){
     // read the contents entry by entry and print to serial 
     byte buffer[256]; 
     while(_flash_storage.peek() > 3){
-        // reconstruct the 
-    } 
+        // read the header 
+        _flash_storage.read(buffer, STORAGE_DATA_HEADER_LENGTH); 
+        int length = buffer[3]; 
+        _flash_storage.read(&buffer[4], length); 
+        // construct the message to send 
+        int send_buffer_length = length + STORAGE_DATA_HEADER_LENGTH + 1; 
+        byte send_buffer[send_buffer_length]; 
+        send_buffer[0] = COMMUNICATION_FILE_REQUEST_ENTRY_CONTENT; 
+        memcpy(&send_buffer[1], buffer, length + STORAGE_DATA_HEADER_LENGTH); 
+        // write 
+        _serial_handler.send_message(send_buffer, send_buffer_length); 
+    }
+    // send a complete message  
+    byte recall_complete = COMMUNCIATION_FILE_REQUEST_COMPLETE; 
+    _serial_handler.send_message(&recall_complete, 1); 
+    return TELEMETRY_MODULE_OK; 
 }

@@ -150,6 +150,12 @@ public:
      */
     TelemetryModuleStatus_t store_data(StorableData * data); 
 
+    /**
+     * send the last file to a host 
+     * mainly used for debugging purposes 
+     */ 
+    void send_last_file(); 
+
 
 
 private: 

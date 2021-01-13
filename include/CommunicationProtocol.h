@@ -52,5 +52,7 @@ format as follows:
     LENGTH (1 byte): length of the data in the message (this is redundant)
     DATA (n bytes): data
 */ 
+#define COMMUNCIATION_FILE_REQUEST_COMPLETE                     44          //< File recall complete 
+
 
 #endif 
