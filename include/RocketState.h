@@ -8,6 +8,16 @@
 #ifndef _ROCKET_STATE_H_
 #define _ROCKET_STATE_H_
 
+/// enum that represents what part of the flight phase the rocket is in  
+    enum FLIGHT_PHASE{
+        WAITING_FOR_LAUNCH_PHASE,       ///< waiting for launch detection 
+        BOOST_PHASE,                    ///< in boost phase (thrust detected)
+        COAST_PHASE,                    ///< in coast phase (thrust stopped, velocity still > 0)
+        APOGEE_PHASE,                   ///< apogee detected 
+        RECOVERY_PHASE,                 ///< descent detected 
+        LANDED_PHASE                    ///< landing detected 
+    };
+
 struct RocketState{
     
     // time definitions 
@@ -29,15 +39,7 @@ struct RocketState{
     float _fused_acceleration[3];       ///< fused acceleration in m/s/s, XYZ 
     float _fused_attitude[3];           ///< fused attitude in deg, XYZ 
 
-    /// enum that represents what part of the flight phase the rocket is in  
-    enum FLIGHT_PHASE{
-        WAITING_FOR_LAUNCH_PHASE,       ///< waiting for launch detection 
-        BOOST_PHASE,                    ///< in boost phase (thrust detected)
-        COAST_PHASE,                    ///< in coast phase (thrust stopped, velocity still > 0)
-        APOGEE_PHASE,                   ///< apogee detected 
-        RECOVERY_PHASE,                 ///< descent detected 
-        LANDED_PHASE                    ///< landing detected 
-    };
+    
 
     // enum members 
     FLIGHT_PHASE _flight_phase;         ///< current flight phase of the rocket 

@@ -11,6 +11,17 @@ TelemetryModuleStatus_t TelemetryModule::begin(RocketState *state){
     return _status; 
 }
 
+TelemetryModuleStatus_t TelemetryModule::stop(){
+    // TODO handle a failed-flight stop command (i.e. preflight buffer never written, close out the file with no data written)
+    _storage_state = STORAGE_DATA_STORAGE_COMPLETE; 
+    // close out the file 
+    _flash_storage.close(); 
+    // stop the timers for completeness 
+    _general_flight_data_timer.pause_timer(); 
+    // return an ok 
+    return TELEMETRY_MODULE_OK; 
+}
+
 TelemetryModuleStatus_t TelemetryModule::start_recording(){
     // open a file to record 
     int flash_status = _flash_storage.open_file_write();  // TODO check the status code 
@@ -18,24 +29,42 @@ TelemetryModuleStatus_t TelemetryModule::start_recording(){
     _general_flight_data_timer.set_timer_frequency(DATA_RECORDING_GENERAL_FLIGHT_DATA_FREQUENCY); 
     _general_flight_data_timer.start_timer(); 
     // TODO add other timers here 
+
+    // set the flag for data storage to be run 
+    _storage_state = STORAGE_STORE_DATA; 
+
     return TELEMETRY_MODULE_OK; 
 }
 
 TelemetryModuleStatus_t TelemetryModule::update(){
-    // first update timers 
-
-    _serial_handler.update(); 
+    if(_storage_state == STORAGE_STORE_DATA){
+        // first update timers 
+        TelemetryModuleStatus_t update_status = update_storage_data(); 
+        // TODO handle 
+    }
+    // check the serial handler 
+    SerialHandlerStatus_t ser_status = _serial_handler.update(); 
+    // TODO handle serial messages here 
 
 
     return TELEMETRY_MODULE_OK; 
 }
 
 TelemetryModuleStatus_t TelemetryModule::update_storage_data(){
-    // check all timers 
-    if(_general_flight_data_timer.update() == UPDATE_TIMER_UPDATE_AVAILABLE){
-        // encode the data and store it 
-        struct StorableData general_data = {STORAGE_GENERAL_FLIGHT_STORAGE_FLAG, _rocket_state->_flight_time, STORAGE_GENERAL_FLIGHT_STORAGE_LENGTH, byte buffer[STORAGE_GENERAL_FLIGHT_STORAGE_LENGTH]; 
-        general_data.data_flag = STORAGE_GENERAL_FLIGHT_STORAGE_FLAG
+    // two main states, preflight and normal flight recording 
+    // check the flight phase to determine which to use 
+    if(_rocket_state->_flight_phase == WAITING_FOR_LAUNCH_PHASE){
+        // no data directly stored onto the computer, instead buffer data as necessary 
+        // TODO handle this properly 
+    }
+    else{ 
+        // check all timers 
+        if(_general_flight_data_timer.update() == UPDATE_TIMER_UPDATE_AVAILABLE){
+            // encode the data and store it 
+            byte buffer[STORAGE_GENERAL_FLIGHT_STORAGE_LENGTH]; 
+            struct StorableData general_data = {STORAGE_GENERAL_FLIGHT_STORAGE_FLAG, _rocket_state->_flight_time, STORAGE_GENERAL_FLIGHT_STORAGE_LENGTH, buffer }; 
+            
+        }
     }
 }
 
@@ -150,7 +179,7 @@ TelemetryModuleStatus_t TelemetryModule::store_data(StorableData *data){
     // write the rest of the message 
     memcpy(&buffer[STORAGE_DATA_HEADER_LENGTH], data->data, data->length); 
     // write to storage 
-    _flash_storage.write(buffer, STORAGE_DATA_HEADER_LENGTH + data->length)
+    _flash_storage.write(buffer, STORAGE_DATA_HEADER_LENGTH + data->length); 
     return TELEMETRY_MODULE_OK; 
 }
 
@@ -226,4 +255,14 @@ float TelemetryModule::convert_to_float(byte * buff, float resolution, int byte_
     float data = value_raw * resolution; 
     // add min value 
     return data + min_value; 
+}
+
+TelemetryModuleStatus_t TelemetryModule::recall_file(int fd){
+    // open up the file 
+    _flash_storage.open_file_read(fd); 
+    // read the contents entry by entry and print to serial 
+    byte buffer[256]; 
+    while(_flash_storage.peek() > 3){
+        // reconstruct the 
+    } 
 }

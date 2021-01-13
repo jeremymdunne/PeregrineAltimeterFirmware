@@ -20,7 +20,8 @@
 #include <FlightRecordingProtocol.h> 
 #include <JFAT.h> 
 #include <HardwareDefs.h>
-
+#include <Configurations.h> 
+ 
 /// Enum containing all possible responses made by the system 
 typedef enum {
     TELEMETRY_MODULE_OK  = 0,                           ///< Telemetry Module Ok 
@@ -157,8 +158,17 @@ private:
     RocketState *_rocket_state;                 ///< Pointer to the state of the Rocket 
     SerialHandler _serial_handler;              ///< SerialHandler object to handle serial communication 
     JFAT _flash_storage;                        ///< JFAT object to handle flash storage interaction 
-    unsigned long _last_time_update = 0;         ///< Last time an time loop was stored 
-    
+    unsigned long _last_time_update = 0;        ///< Last time an time loop was stored 
+
+    enum STORAGE_STATE{
+        STORAGE_STORE_DATA,                     ///< Data storage as normal 
+        STORAGE_DATA_STORAGE_COMPLETE,          ///< Data storage has been completed and file closed 
+        STORAGE_DATA_NO_STORAGE                 ///< No data storage (typcial sign of data recall or preflight checks)
+    }; 
+
+
+    STORAGE_STATE _storage_state = STORAGE_DATA_NO_STORAGE;  
+
     // data storage timers 
     UpdateTimer _general_flight_data_timer;     ///< Timer for the general flight data updates 
 
@@ -216,6 +226,15 @@ private:
      */ 
     float convert_to_float(byte * buff, float resolution, int byte_size, float min_value); 
 
+
+
+    /**
+     * recall a file 
+     * print contents through the serial handler 
+     * @param fd file index 
+     * @return status code 
+     */ 
+    TelemetryModuleStatus_t recall_file(int fd); 
 
 
 }; 

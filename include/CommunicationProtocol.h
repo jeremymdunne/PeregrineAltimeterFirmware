@@ -35,5 +35,22 @@ format as follows:
 
 */ 
  
+// file request flags 
+#define COMMUNICATION_REQUEST_FILE_CONTENTS                     42          //< Request for the contents of a file 
+/*
+format as follows: 
+    FILE_INDEX (1 byte): file being requested
+
+This request will place the device in a file recall state 
+The entire contents of a flight will be output to the host line by line using the below response 
+*/ 
+#define COMMUNICATION_FILE_REQUEST_ENTRY_CONTENT                43          //< Request response including one entry from storage 
+/* 
+format as follows: 
+    DATA_FLAG (1 byte): flag of the data (entry)
+    TIME_STAMP (2 bytes): time stamp of the data (a flag will represent a time loop)
+    LENGTH (1 byte): length of the data in the message (this is redundant)
+    DATA (n bytes): data
+*/ 
 
 #endif 
