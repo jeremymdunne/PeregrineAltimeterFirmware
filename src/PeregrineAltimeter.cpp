@@ -22,11 +22,14 @@ int PeregrineAltimeter::run(){
     _telemetry.start_recording(); 
     // run for a bit 
     long start = millis(); 
+    _state._flight_phase = WAITING_FOR_LAUNCH_PHASE; 
     while(millis() - start < 10000){
+        // record the flight time 
+        _state._flight_time = millis() - start; 
         _kinematics.update(); 
         _telemetry.update(); 
     }
-    // stop the telemetry to let it store the data 
+    // stop the telemetry to l=et it store the data 
     _telemetry.stop(); 
     _telemetry.send_file_list(); 
     _telemetry.send_last_file(); 
