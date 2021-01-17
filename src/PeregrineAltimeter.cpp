@@ -3,6 +3,7 @@
 
 int PeregrineAltimeter::run(){
     // main function of the altimeter 
+    delay(2000); 
     init_modules(); 
 
 
@@ -22,7 +23,7 @@ int PeregrineAltimeter::run(){
     _telemetry.start_recording(); 
     // run for a bit 
     long start = millis(); 
-    _state._flight_phase = WAITING_FOR_LAUNCH_PHASE; 
+    _state._flight_phase = BOOST_PHASE; 
     while(millis() - start < 10000){
         // record the flight time 
         _state._flight_time = millis() - start; 
@@ -33,7 +34,7 @@ int PeregrineAltimeter::run(){
     _telemetry.stop(); 
     _telemetry.send_file_list(); 
     _telemetry.send_last_file(); 
-    return 0; 
+    
     while(true){
         delay(2000); 
         _kinematics.update(); 

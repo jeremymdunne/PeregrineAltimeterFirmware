@@ -54,6 +54,8 @@ TelemetryModuleStatus_t TelemetryModule::update(){
     if(_storage_state == STORAGE_STORE_DATA){
         // first update timers 
         TelemetryModuleStatus_t update_status = update_storage_data(); 
+        char msg[] = {"updating storage"}; 
+        send_verbose_string(msg, 13); 
         // TODO handle 
     }
     // check the serial handler 
@@ -77,7 +79,8 @@ TelemetryModuleStatus_t TelemetryModule::update_storage_data(){
             // encode the data and store it 
             byte buffer[STORAGE_GENERAL_FLIGHT_STORAGE_LENGTH]; 
             struct StorableData general_data = {STORAGE_GENERAL_FLIGHT_STORAGE_FLAG, _rocket_state->_flight_time, STORAGE_GENERAL_FLIGHT_STORAGE_LENGTH, buffer }; 
-            
+            // store the data 
+            store_data(&general_data); 
         }
     }
 }
