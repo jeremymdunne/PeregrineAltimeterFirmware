@@ -26,10 +26,12 @@
 typedef enum {
     TELEMETRY_MODULE_OK  = 0,                           ///< Telemetry Module Ok 
     TELEMETRY_MODULE_AVAILABLE_SERIAL_MESSAGE,          ///< Available message from serial 
+    TELEMETRY_MODULE_NO_SERIAL_MESSAGE_AVAILABLE,       ///< No serial message available 
     TELEMETRY_MODULE_AVAILABLE_RADIO_MESSAGE,           ///< Available message from radio 
     TELEMETRY_MODULE_STORAGE_COMMUNICATION_FAIL,        ///< Failed to communicate with the flash storage  
     TELEMETRY_MODULE_RADIO_COMMUNICATION_FAIL,          ///< Failed to communicate with the radio 
     TELEMETRY_MODULE_UNKOWN_FAIL,                       ///< Unkown failure 
+    TELEMETRY_MODULE_SERIAL_MESSAGE_NOT_HANDLED         ///< Serial message not handled 
 
 }   TelemetryModuleStatus_t; 
 
@@ -81,22 +83,20 @@ public:
     /**
      * send a verbose message 
      * 
-     * @param buffer message buffer
-     * @param length length of the message
+     * @param buffer message buffer, must be null terminated 
      * @param msg_type type of message to send 
      * @param medium medium to send the message through 
      */ 
-    TelemetryModuleStatus_t send_verbose_string(char * buffer, int length, TelemetryMessageMedium_t medium = TELEMETRY_SERIAL); 
+    TelemetryModuleStatus_t send_verbose_string(char * buffer, TelemetryMessageMedium_t medium = TELEMETRY_SERIAL); 
 
     /**
      * send an error message 
      * 
-     * @param buffer message buffer
-     * @param length length of the message
+     * @param buffer message buffer, must be null terminated 
      * @param msg_type type of message to send 
      * @param medium medium to send the message through 
      */ 
-    TelemetryModuleStatus_t send_error_string(char * buffer, int length, TelemetryMessageMedium_t medium = TELEMETRY_SERIAL); 
+    TelemetryModuleStatus_t send_error_string(char * buffer, TelemetryMessageMedium_t medium = TELEMETRY_SERIAL); 
 
     /**
      * open a file to write 
@@ -177,6 +177,14 @@ private:
 
     // data storage timers 
     UpdateTimer _general_flight_data_timer;     ///< Timer for the general flight data updates 
+
+
+    /**
+     * handle a serial message 
+     * 
+     * @return status code 
+     */ 
+    TelemetryModuleStatus_t handle_serial_message(); 
 
     /**
      * update all storage timers 

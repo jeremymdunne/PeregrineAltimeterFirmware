@@ -11,8 +11,8 @@
 #define _COMMUNICATION_PROTOCOL_H_
 
 /// Standard Communication Flags 
-#define COMMUNICATION_CONNECTION_REQUEST_FLAG                   11          //< Communication request ping made by the altimeter to connected software 
-#define COMMUNICATION_CONNECTION_SUCCESS_FLAG                   12          //< Communication request success response made by connected software 
+#define COMMUNICATION_CONNECTION_REQUEST_FLAG                   11          //< Communication request ping made by connected software to the altimeter 
+#define COMMUNICATION_CONNECTION_SUCCESS_FLAG                   12          //< Communication request success response made by the altimeter 
 #define COMMUNICATION_SEND_OK                                   13          //< Communication message acknowledgement 
 #define COMMUNICATION_RESEND_REQUEST                            14          //< Communication message request resend 
 #define COMMUNICATION_RESEND_UNABLE                             15          //< Communication message resend request unable to be completed 

@@ -10,16 +10,8 @@ int PeregrineAltimeter::run(){
     _telemetry.light_error_led();
     // Testing purposes, send out strings 
     char buffer[] = "Hello, World!"; 
-    // grab the length of the buffer 
-    int cntr = 0; 
-    bool done = false; 
-    while(!done){
-        if(buffer[cntr] == '\0'){
-            done = true; 
-        }
-        else cntr ++; 
-    }
     // send the message in a loop 
+    /*
     _telemetry.start_recording(); 
     // run for a bit 
     long start = millis(); 
@@ -34,12 +26,12 @@ int PeregrineAltimeter::run(){
     _telemetry.stop(); 
     _telemetry.send_file_list(); 
     _telemetry.send_last_file(); 
-    
+    */ 
     while(true){
-        delay(2000); 
+        // delay(2000); 
         _kinematics.update(); 
         _telemetry.update(); 
-        _telemetry.send_file_list(); 
+        
        
     }
     return 0; 

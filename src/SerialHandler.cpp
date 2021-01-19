@@ -9,6 +9,26 @@ SerialHandlerStatus_t SerialHandler::begin(){
     return _status; 
 }
 
+int SerialHandler::get_message(byte * buffer){
+    if(!_message_avail) return 0; 
+    // copy over the message contents 
+    memcpy(buffer, &_receive_buffer[2], _receive_buffer_index - 2); 
+    int len = _receive_buffer_index - 2; 
+    _receive_buffer_index = 0; 
+    // flag as no message available 
+    _message_avail = false; 
+    // set the status to ok 
+    _status = SERIAL_HANDLER_OK; 
+    return len; 
+}
+
+int SerialHandler::get_message_length(){
+    if(_message_avail){
+        return _receive_buffer_index - 2; 
+    }
+    return 0; 
+}
+
 SerialHandlerStatus_t SerialHandler::update(){
     // check if a message is already available 
     if(_message_avail){
@@ -21,6 +41,7 @@ SerialHandlerStatus_t SerialHandler::update(){
         int msg_length = read_message(_receive_buffer, SERIAL_HANDLER_RECIEVE_BUFFER_LENGTH); 
         // decode it 
         SerialHandlerStatus_t resp = decode_message(_receive_buffer, msg_length); 
+        _receive_buffer_index = msg_length - 1; // remove the checksum 
         if(resp == SERIAL_HANDLER_CHECKSUM_MISMATCH){
             // ask for a resend 
             request_resend(); 
@@ -29,9 +50,12 @@ SerialHandlerStatus_t SerialHandler::update(){
         }
         else if(resp == SERIAL_HANDLER_OK){
             // check the code for a connection request 
-            if(_receive_buffer[3] == COMMUNICATION_CONNECTION_SUCCESS_FLAG){
+            if(_receive_buffer[2] == COMMUNICATION_CONNECTION_REQUEST_FLAG){
                 // update the state 
                 _connected = true; 
+                // send a connected message 
+                byte connection_success = COMMUNICATION_CONNECTION_SUCCESS_FLAG; 
+                send_message(&connection_success, 1); 
                 _status = SERIAL_HANDLER_OK; 
                 return _status; 
             }
@@ -97,6 +121,11 @@ SerialHandlerStatus_t SerialHandler::send_message(byte * buffer, int length){
 SerialHandlerStatus_t SerialHandler::wait_for_message_response(){
     // get a message 
     read_message(_receive_buffer, SERIAL_HANDLER_RECIEVE_BUFFER_LENGTH); 
+    // handle a connection request here 
+    if(_receive_buffer[2] == COMMUNICATION_CONNECTION_SUCCESS_FLAG){
+        _connected = true;
+        return wait_for_message_response(); 
+    }
     // check the status 
     switch(_status){
         case(SERIAL_HANDLER_BUFFER_TOO_SMALL):

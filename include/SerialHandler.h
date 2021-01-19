@@ -22,6 +22,7 @@
 typedef enum{
     SERIAL_HANDLER_OK = 0,                  //< Status is ok 
     SERIAL_HANDLER_MESSAGE_AVAILABLE,       //< Message available 
+    SERIAL_HANDLER_NO_MESSAGE_AVAILABLE,    //< No Message Available 
     SERIAL_HANDLER_BUFFER_TOO_SMALL,        //< Buffer provided to store the message in was too small 
     SERIAL_HANDLER_NOT_CONNECTED,           //< No device connected 
     SERIAL_HANDLER_RECEIVE_TIMEOUT,         //< Timeout on attempting to recieve a message 
@@ -70,6 +71,8 @@ public:
      * 
      * Handles communication handshake (length in first two bytes, checksum at end)
      * 
+     * Blocks until a successful send recipt or timeout has occurred 
+     * 
      * @param buffer message to send 
      * @param length length of message to send 
      * 
@@ -79,13 +82,20 @@ public:
 
     /** 
      * get the most recent serial message 
+     * strongly suggest use the get_message_length() function to determine appropriate length of the buffer 
      * 
      * @param buffer to copy the contents into 
-     * @param max_length maximum length of the buffer 
      * 
-     * @return length of the message or -1 if the buffer was too small 
+     * @return length of the message 
      */ 
-    int get_message(byte * buffer, int max_length); 
+    int get_message(byte * buffer); 
+
+    /**
+     * get the length of the most recent serial message 
+     * 
+     * @return length (in bytes) of the message 
+     */ 
+    int get_message_length(); 
 
     /**
      * attempt a connection

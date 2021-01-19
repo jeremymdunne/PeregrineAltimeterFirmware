@@ -47,7 +47,7 @@ void TelemetryModule::send_last_file(){
     }
     // write an error message 
     char msg[] = {"LAST FILE HAD NO LENGTH, NOT SENDING CONTENTS"}; 
-    send_verbose_string(msg, 25); 
+    send_verbose_string(msg); 
 }
 
 TelemetryModuleStatus_t TelemetryModule::update(){
@@ -55,15 +55,48 @@ TelemetryModuleStatus_t TelemetryModule::update(){
         // first update timers 
         TelemetryModuleStatus_t update_status = update_storage_data(); 
         char msg[] = {"updating storage"}; 
-        send_verbose_string(msg, 13); 
+        send_verbose_string(msg); 
         // TODO handle 
     }
     // check the serial handler 
     SerialHandlerStatus_t ser_status = _serial_handler.update(); 
     // TODO handle serial messages here 
-
+    if(ser_status == SERIAL_HANDLER_MESSAGE_AVAILABLE){
+        // handle the message 
+        handle_serial_message(); 
+    }
 
     return TELEMETRY_MODULE_OK; 
+}
+
+TelemetryModuleStatus_t TelemetryModule::handle_serial_message(){
+    // get the message from the serial buffer 
+    byte buffer[_serial_handler.get_message_length()]; 
+    int size = _serial_handler.get_message(buffer); 
+    if(size == 0){
+        // no message available 
+        return TELEMETRY_MODULE_NO_SERIAL_MESSAGE_AVAILABLE; 
+    } 
+    // otherwise, parse the flag 
+    switch(buffer[0]){
+        case(COMMUNICATION_REQUEST_FILE_LIST_FLAG):
+            // request to send file list 
+            return send_file_list(); 
+            break; 
+        case(COMMUNICATION_FILE_LIST_FLAG): {
+            // request to send a file 
+            int file_index = buffer[1]; 
+            // recall last file 
+            //return recall_file(file_index); 
+            send_last_file(); 
+            return TELEMETRY_MODULE_OK; 
+            } break; 
+        default: 
+            char msg[] = {"FLAG NOT YET HANDLED: "}; 
+            send_error_string(msg); 
+            return TELEMETRY_MODULE_SERIAL_MESSAGE_NOT_HANDLED; 
+    } 
+
 }
 
 TelemetryModuleStatus_t TelemetryModule::update_storage_data(){
@@ -85,31 +118,33 @@ TelemetryModuleStatus_t TelemetryModule::update_storage_data(){
     }
 }
 
-TelemetryModuleStatus_t TelemetryModule::send_verbose_string(char * buffer, int length, TelemetryMessageMedium_t medium){
+TelemetryModuleStatus_t TelemetryModule::send_verbose_string(char * buffer, TelemetryMessageMedium_t medium){
     // send the string through the medium 
     switch(medium){
         case(TELEMETRY_SERIAL):
             // package the message 
-            byte out_buffer[length + 1]; 
+            int len = strlen(buffer); 
+            byte out_buffer[len + 1]; 
             out_buffer[0] = COMMUNICATION_VERBOSE_MESSAGE_FLAG; 
-            memcpy(&out_buffer[1], buffer, length); 
+            memcpy(&out_buffer[1], buffer, len); 
             // send the message 
-            _serial_handler.send_message(out_buffer,length+1); 
+            _serial_handler.send_message(out_buffer,len+1); 
     }
     _status = TELEMETRY_MODULE_OK; 
     return _status; 
 }
 
-TelemetryModuleStatus_t TelemetryModule::send_error_string(char * buffer, int length, TelemetryMessageMedium_t medium){
+TelemetryModuleStatus_t TelemetryModule::send_error_string(char * buffer, TelemetryMessageMedium_t medium){
     // send the string through the medium 
     switch(medium){
         case(TELEMETRY_SERIAL):
             // package the message 
-            byte out_buffer[length + 1]; 
+            int len = strlen(buffer); 
+            byte out_buffer[len + 1]; 
             out_buffer[0] = COMMUNICATION_ERROR_MESSAGE_FLAG; 
-            memcpy(&out_buffer[1], buffer, length); 
+            memcpy(&out_buffer[1], buffer, len); 
             // send the message 
-            _serial_handler.send_message(out_buffer,length+1); 
+            _serial_handler.send_message(out_buffer,len); 
     }
     _status = TELEMETRY_MODULE_OK; 
     return _status; 
@@ -120,9 +155,9 @@ int TelemetryModule::get_file_list_buff(byte * buffer){
     JFAT::FileList file_list; 
     _flash_storage.read_fat(&file_list); 
     // first write the number of files 
-    buffer[0] = file_list.num_files >> 8; 
-    buffer[1] = (byte)file_list.num_files; 
-    int pntr = 2; 
+    // buffer[0] = file_list.num_files >> 8; 
+    buffer[0] = (byte)file_list.num_files; 
+    int pntr = 1; 
     for(int i = 0; i < file_list.num_files; i ++){
         int length = file_list.page_length[i]; 
         buffer[pntr] = (byte)(length >> 8); 
@@ -157,17 +192,17 @@ TelemetryModuleStatus_t TelemetryModule::initialize_flash_storage(){
         return _status; 
     }
     // delete all files 
-    delete_all_files();
+    // delete_all_files();
     // at least on file must be found 
     JFAT::FileList file_list; 
     _flash_storage.read_fat(&file_list); 
-    if(file_list.num_files < 2){
+    // if(file_list.num_files < 2){
         // create a mock file 
-        _flash_storage.open_file_write(); 
-        _flash_storage.close(); 
-    }
-    _flash_storage.open_file_write(); 
-    _flash_storage.close(); 
+    //    _flash_storage.open_file_write(); 
+    //    _flash_storage.close(); 
+    //}
+    // _flash_storage.open_file_write(); 
+    // _flash_storage.close(); 
     // return success 
     _status = TELEMETRY_MODULE_OK; 
     return _status; 
