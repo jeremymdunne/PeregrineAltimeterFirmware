@@ -10,6 +10,8 @@ SerialHandlerStatus_t SerialHandler::begin(){
 }
 
 int SerialHandler::get_message(byte * buffer){
+    // check if connected 
+    if(!_connected) return 0; 
     if(!_message_avail) return 0; 
     // copy over the message contents 
     memcpy(buffer, &_receive_buffer[2], _receive_buffer_index - 2); 
@@ -65,7 +67,6 @@ SerialHandlerStatus_t SerialHandler::update(){
             return _status; 
         }
     }
-    if(!_connected) send_connection_request(); // attempt to connect with the host 
     return _status; 
 }
 
@@ -207,10 +208,4 @@ void SerialHandler::request_resend(){
     // construct the simple message 
     byte resend_command = COMMUNICATION_RESEND_REQUEST; 
     send_message(&resend_command, 1); 
-}
-
-void SerialHandler::send_connection_request(){
-    // write a connection attempt 
-    byte request = COMMUNICATION_CONNECTION_REQUEST_FLAG; 
-    send_message(&request, 1);  
 }
