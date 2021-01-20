@@ -25,6 +25,7 @@ typedef enum{
     SERIAL_HANDLER_NO_MESSAGE_AVAILABLE,    //< No Message Available 
     SERIAL_HANDLER_BUFFER_TOO_SMALL,        //< Buffer provided to store the message in was too small 
     SERIAL_HANDLER_NOT_CONNECTED,           //< No device connected 
+    SERIAL_HANDLER_SEND_FAILED,             ///< Send failed 
     SERIAL_HANDLER_RECEIVE_TIMEOUT,         //< Timeout on attempting to recieve a message 
     SERIAL_HANDLER_CHECKSUM_MISMATCH,       //< Mismatch on the message checksum, need to request a resend 
     SERIAL_HANDLER_RESEND_REQUEST,          //< Request to resend the last message 
@@ -32,6 +33,12 @@ typedef enum{
     SERIAL_HANDLER_UNKNOWN_ERROR            //< Unkown error occurred 
 } SerialHandlerStatus_t; 
 
+
+struct SerialMessage{
+    int message_flag; 
+    int data_length; 
+    byte * data; 
+}; 
 
 
 class SerialHandler{
@@ -80,6 +87,17 @@ public:
      */ 
     SerialHandlerStatus_t send_message(byte * buffer, int length); 
 
+
+    /**
+     * send a message over serial 
+     * 
+     * Handles encoding the message to be send 
+     * Blocks until a message recipt is received 
+     * @param message pointer to the message to be sent 
+     * @return status code 
+     */ 
+    SerialHandlerStatus_t send_message(SerialMessage * message); 
+
     /** 
      * get the most recent serial message 
      * strongly suggest use the get_message_length() function to determine appropriate length of the buffer 
@@ -110,7 +128,18 @@ private:
     bool _connected = false;                                            //< current connection status 
     byte _receive_buffer[SERIAL_HANDLER_RECIEVE_BUFFER_LENGTH];         //< receive buffer to store data into   
     unsigned int _receive_buffer_index = 0;  
-    bool _message_avail = false;                                
+    bool _message_avail = false;         
+
+    SerialMessage _received_message = {0,0,_receive_buffer};                        
+
+    /** 
+     * write a buffer over serial and wait for a recipt 
+     * 
+     * @param buffer buffer to send 
+     * @param length length of the buffer 
+     * @return status code 
+     */ 
+    SerialHandlerStatus_t write_buffer(byte * buffer, int length); 
 
 
     /**

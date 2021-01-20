@@ -124,11 +124,11 @@ TelemetryModuleStatus_t TelemetryModule::send_verbose_string(char * buffer, Tele
         case(TELEMETRY_SERIAL):
             // package the message 
             int len = strlen(buffer); 
-            byte out_buffer[len + 1]; 
-            out_buffer[0] = COMMUNICATION_VERBOSE_MESSAGE_FLAG; 
-            memcpy(&out_buffer[1], buffer, len); 
-            // send the message 
-            _serial_handler.send_message(out_buffer,len+1); 
+            SerialMessage msg; 
+            msg.message_flag = COMMUNICATION_VERBOSE_MESSAGE_FLAG; 
+            msg.data_length = len; 
+            msg.data = (byte *)buffer; 
+            _serial_handler.send_message(&msg); 
     }
     _status = TELEMETRY_MODULE_OK; 
     return _status; 
@@ -139,12 +139,12 @@ TelemetryModuleStatus_t TelemetryModule::send_error_string(char * buffer, Teleme
     switch(medium){
         case(TELEMETRY_SERIAL):
             // package the message 
-            int len = strlen(buffer); 
-            byte out_buffer[len + 1]; 
-            out_buffer[0] = COMMUNICATION_ERROR_MESSAGE_FLAG; 
-            memcpy(&out_buffer[1], buffer, len); 
-            // send the message 
-            _serial_handler.send_message(out_buffer,len); 
+             int len = strlen(buffer); 
+            SerialMessage msg; 
+            msg.message_flag = COMMUNICATION_ERROR_MESSAGE_FLAG; 
+            msg.data_length = len; 
+            msg.data = (byte *)buffer; 
+            _serial_handler.send_message(&msg); 
     }
     _status = TELEMETRY_MODULE_OK; 
     return _status; 

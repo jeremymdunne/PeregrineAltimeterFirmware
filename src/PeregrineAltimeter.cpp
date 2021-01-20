@@ -10,6 +10,7 @@ int PeregrineAltimeter::run(){
     _telemetry.light_error_led();
     // Testing purposes, send out strings 
     char buffer[] = "Hello, World!"; 
+    _telemetry.send_verbose_string(buffer); 
     // send the message in a loop 
     /*
     _telemetry.start_recording(); 

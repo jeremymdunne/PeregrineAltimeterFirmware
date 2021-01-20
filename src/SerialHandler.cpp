@@ -70,6 +70,54 @@ SerialHandlerStatus_t SerialHandler::update(){
     return _status; 
 }
 
+SerialHandlerStatus_t SerialHandler::send_message(SerialMessage * message){
+    // encode the message into a single buffer 
+    byte send_buffer[message->data_length + 4]; 
+    // encode the length 
+    int length = message->data_length + 2; // add the checksum 
+    send_buffer[0] = (byte)(length >> 8); 
+    send_buffer[1] = (byte)(length); 
+    send_buffer[2] = message->message_flag; 
+    // encode the checksum 
+    unsigned long crc = send_buffer[0] + send_buffer[1] + send_buffer[2]; 
+    for(int i = 0; i < message->data_length; i ++){
+        crc += message->data[i]; 
+        send_buffer[i + 3] = message->data[i]; 
+    }
+    send_buffer[message->data_length + 3] = (byte)(crc); 
+    // write the buffer 
+    SerialHandlerStatus_t send_status = write_buffer(send_buffer,message->data_length + 4); 
+    // return the status 
+    return send_status; 
+}
+
+SerialHandlerStatus_t SerialHandler::write_buffer(byte * buffer, int length){
+    // write the buffer to serial and wait for a response 
+    int resend_count = 0; 
+    // TODO flush the serial buffer at this point 
+    for(; resend_count < SERIAL_HANDLER_RESEND_ATTEMPTS; resend_count ++){
+        // send the data 
+        SERIAL_HANDLER_SOURCE.write(buffer, length); 
+        // check the serial source for a response 
+        read_message(_receive_buffer, SERIAL_HANDLER_RECIEVE_BUFFER_LENGTH); 
+        switch(_receive_buffer[2]){
+            case(COMMUNICATION_SEND_OK):
+                // send good, return with an ok 
+                return SERIAL_HANDLER_OK; 
+                break; 
+            case(COMMUNICATION_RESEND_REQUEST):
+                // loop 
+                break; 
+            default:
+                // weird error 
+                // TODO handle this 
+                break; 
+        }
+    }
+    // presume send fail 
+    return SERIAL_HANDLER_SEND_FAILED; 
+}
+
 SerialHandlerStatus_t SerialHandler::send_message(byte * buffer, int length){
     // encode the length in the first two bytes 
     int msg_length = length + 1; // one extra for the checksum 
