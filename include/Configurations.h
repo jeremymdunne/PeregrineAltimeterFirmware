@@ -25,4 +25,21 @@
 
 
 
+
+
+// Flight Phase Detection Algorithms
+
+#define LAUNCH_DETECTION_MINUMUM_SUSTAINED_ACCELERATION         20 // m/s/s 
+#define LAUNCH_DETECTION_MINUMUM_SUSTAINED_TIME                 2000 // ms 
+
+#define COAST_DETECTION_MAXIMUM_SUSTAINED_ACCELERATION          0   // m/s/s 
+#define COAST_DETECTION_MINUMUM_SUSTAINED_TIE                   500 // m/s 
+
+#define APOGEE_DETECTION_MAXIMUM_VELOCITY                       30  // m/s 
+#define APOGEE_DETECTION_MINUMUM_APOGEE                         20 // m 
+
+
+
+
+
 #endif 
