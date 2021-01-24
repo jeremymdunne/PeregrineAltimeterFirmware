@@ -178,6 +178,7 @@ private:
 
     // data storage timers 
     UpdateTimer _general_flight_data_timer;     ///< Timer for the general flight data updates 
+    UpdateTimer _live_sensor_feed;              ///< Timer for giving a host computer live flight data 
 
 
     /**

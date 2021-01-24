@@ -54,5 +54,9 @@ format as follows:
 */ 
 #define COMMUNCIATION_FILE_REQUEST_COMPLETE                     44          //< File recall complete, ASCII ','  
 
+#define COMMUNICATION_FILE_DELETE_ALL_FILES                     45          //< Delete all files on the board 
+#define COMMUNICATION_FILE_DELETE_LAST_FILE                     46          //< Delete the last file on the device 
+
+
 
 #endif 

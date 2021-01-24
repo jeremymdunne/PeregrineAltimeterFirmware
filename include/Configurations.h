@@ -19,6 +19,10 @@
 #define SENSOR_IMU_UPDATE_FREQ          100 
 #define SENSOR_BMP_UPDATE_FREQ          20 
 
+// live computer data frequencies 
+#define LIVE_SENSOR_UPDATES_FREQ        3
+
+
 
 
 #endif 
