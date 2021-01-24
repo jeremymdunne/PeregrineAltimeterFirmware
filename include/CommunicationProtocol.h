@@ -58,5 +58,16 @@ format as follows:
 #define COMMUNICATION_FILE_DELETE_LAST_FILE                     46          //< Delete the last file on the device 
 
 
+#define COMMUNICATION_START_LIVE_SENSOR_FEED                    50          //< Start reporting a live sensor feed at a predetermined rate  
+#define COMMUNICATION_LIVE_SENSOR_FLAG                          51          //< Flag for a live sensor feed 
+/* 
+format as follows: 
+    Same as the GENERAL_FLIGHT_STORAGE data flag 
+*/ 
+
+
+
+
+
 
 #endif 
