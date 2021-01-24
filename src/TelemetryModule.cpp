@@ -65,38 +65,39 @@ TelemetryModuleStatus_t TelemetryModule::update(){
         // handle the message 
         handle_serial_message(); 
     }
-
     return TELEMETRY_MODULE_OK; 
 }
 
 TelemetryModuleStatus_t TelemetryModule::handle_serial_message(){
     // get the message from the serial buffer 
-    byte buffer[_serial_handler.get_message_length()]; 
-    int size = _serial_handler.get_message(buffer); 
-    if(size == 0){
-        // no message available 
-        return TELEMETRY_MODULE_NO_SERIAL_MESSAGE_AVAILABLE; 
-    } 
+    SerialMessage * new_message = _serial_handler.get_message(); 
+    char msg[] = {"New Message Recieved:"};
+    char new_msg[strlen(msg) + 1]; 
+    memcpy(new_msg, msg, strlen(msg)); 
+    new_msg[strlen(msg)] = new_message->message_flag;   
+    send_verbose_string(new_msg); 
     // otherwise, parse the flag 
-    switch(buffer[0]){
+    switch(new_message->message_flag){
         case(COMMUNICATION_REQUEST_FILE_LIST_FLAG):
             // request to send file list 
+            delSerialMessage(new_message); 
             return send_file_list(); 
             break; 
         case(COMMUNICATION_FILE_LIST_FLAG): {
             // request to send a file 
-            int file_index = buffer[1]; 
+            int file_index = new_message->data[0]; 
             // recall last file 
             //return recall_file(file_index); 
             send_last_file(); 
+            delSerialMessage(new_message); 
             return TELEMETRY_MODULE_OK; 
             } break; 
         default: 
             char msg[] = {"FLAG NOT YET HANDLED: "}; 
             send_error_string(msg); 
+            delSerialMessage(new_message); 
             return TELEMETRY_MODULE_SERIAL_MESSAGE_NOT_HANDLED; 
     } 
-
 }
 
 TelemetryModuleStatus_t TelemetryModule::update_storage_data(){
@@ -124,6 +125,7 @@ TelemetryModuleStatus_t TelemetryModule::send_verbose_string(char * buffer, Tele
         case(TELEMETRY_SERIAL):
             // package the message 
             int len = strlen(buffer); 
+            // construct the message 
             SerialMessage msg; 
             msg.message_flag = COMMUNICATION_VERBOSE_MESSAGE_FLAG; 
             msg.data_length = len; 
@@ -170,11 +172,14 @@ int TelemetryModule::get_file_list_buff(byte * buffer){
 TelemetryModuleStatus_t TelemetryModule::send_file_list(){
     // compose the message and send it through the serial buffer 
     byte buffer[512]; 
-    buffer[0] = COMMUNICATION_FILE_LIST_FLAG; // first byte is always the flag 
-    int len = get_file_list_buff(&buffer[1]); 
+    int len = get_file_list_buff(buffer); 
     len ++; // account for the flag 
+    SerialMessage msg; 
+    msg.message_flag = COMMUNICATION_FILE_LIST_FLAG; 
+    msg.data = buffer; 
+    msg.data_length = len; 
     // send over serial 
-    _serial_handler.send_message(buffer,len); 
+    _serial_handler.send_message(&msg); 
     _status = TELEMETRY_MODULE_OK; 
     return _status; 
 }
@@ -310,25 +315,68 @@ float TelemetryModule::convert_to_float(byte * buff, float resolution, int byte_
 }
 
 TelemetryModuleStatus_t TelemetryModule::recall_file(int fd){
+    char start_msg[] = {"Sending File "}; 
+    send_verbose_string(start_msg); 
     // open up the file 
     _flash_storage.open_file_read(fd); 
     // read the contents entry by entry and print to serial 
     byte buffer[256]; 
+    long start = millis(); 
     while(_flash_storage.peek() > 3){
         // read the header 
+        long const_start = millis(); 
+
         _flash_storage.read(buffer, STORAGE_DATA_HEADER_LENGTH); 
         int length = buffer[3]; 
         _flash_storage.read(&buffer[4], length); 
         // construct the message to send 
-        int send_buffer_length = length + STORAGE_DATA_HEADER_LENGTH + 1; 
-        byte send_buffer[send_buffer_length]; 
-        send_buffer[0] = COMMUNICATION_FILE_REQUEST_ENTRY_CONTENT; 
-        memcpy(&send_buffer[1], buffer, length + STORAGE_DATA_HEADER_LENGTH); 
+        int send_buffer_length = length + STORAGE_DATA_HEADER_LENGTH; 
+        //byte send_buffer[send_buffer_length]; 
+        //memcpy(send_buffer, buffer, length + STORAGE_DATA_HEADER_LENGTH);
+        SerialMessage msg; 
+        msg.message_flag = COMMUNICATION_FILE_REQUEST_ENTRY_CONTENT; 
+        msg.data_length = send_buffer_length; 
+        msg.data = buffer; 
+
+        
+        char time[16]; 
+        itoa((int)(millis()-const_start), time, 10); 
+        int time_len = strlen(time); 
+        char send[64]; 
+        strcpy(send, "FILE ENTRY CONSTRUCTION TIME: "); 
+        strcat(send, time); 
+        strcat(send, " MS");
+        send_verbose_string(send); 
+
         // write 
-        _serial_handler.send_message(send_buffer, send_buffer_length); 
+        long send_start = millis(); 
+        
+        _serial_handler.send_message(&msg); 
+
+        //char time[16]; 
+        itoa((int)(millis()-send_start), time, 10); 
+       // int time_len = strlen(time); 
+        //char send[64]; 
+        strcpy(send, "FILE ENTRY SEND TIME: "); 
+        strcat(send, time); 
+        strcat(send, " MS");
+        send_verbose_string(send); 
     }
     // send a complete message  
-    byte recall_complete = COMMUNCIATION_FILE_REQUEST_COMPLETE; 
-    _serial_handler.send_message(&recall_complete, 1); 
+    SerialMessage msg; 
+    msg.message_flag = COMMUNCIATION_FILE_REQUEST_COMPLETE; 
+    msg.data_length = 0; 
+    _serial_handler.send_message(&msg); 
+
+    char time[16]; 
+    itoa((int)(millis()-start), time, 10); 
+    int time_len = strlen(time); 
+    char send[64]; 
+    strcpy(send, "FILE SEND TIME: "); 
+    strcat(send, time); 
+    strcat(send, " MS");
+    send_verbose_string(send); 
+    
+    _flash_storage.close(); 
     return TELEMETRY_MODULE_OK; 
 }

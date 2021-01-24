@@ -2,258 +2,170 @@
 
 
 SerialHandlerStatus_t SerialHandler::begin(){
-    // open up the serial at the specified baud 
+    // initalize the serial 
     SERIAL_HANDLER_SOURCE.begin(SERIAL_HANDLER_BAUD_RATE); 
-    // pre-empt with a connection attempt 
-    _status = SERIAL_HANDLER_OK; 
-    return _status; 
+    // return ok 
+    return SERIAL_HANDLER_OK; 
 }
 
-int SerialHandler::get_message(byte * buffer){
-    // check if connected 
-    if(!_connected) return 0; 
-    if(!_message_avail) return 0; 
-    // copy over the message contents 
-    memcpy(buffer, &_receive_buffer[2], _receive_buffer_index - 2); 
-    int len = _receive_buffer_index - 2; 
-    _receive_buffer_index = 0; 
-    // flag as no message available 
-    _message_avail = false; 
-    // set the status to ok 
-    _status = SERIAL_HANDLER_OK; 
-    return len; 
-}
-
-int SerialHandler::get_message_length(){
-    if(_message_avail){
-        return _receive_buffer_index - 2; 
-    }
-    return 0; 
-}
 
 SerialHandlerStatus_t SerialHandler::update(){
-    // check if a message is already available 
-    if(_message_avail){
-        _status = SERIAL_HANDLER_MESSAGE_AVAILABLE; 
-        return _status; 
-    }
-    // check the incoming buffer 
-    while(SERIAL_HANDLER_SOURCE.available()){
-        // get a message 
-        int msg_length = read_message(_receive_buffer, SERIAL_HANDLER_RECIEVE_BUFFER_LENGTH); 
-        // decode it 
-        SerialHandlerStatus_t resp = decode_message(_receive_buffer, msg_length); 
-        _receive_buffer_index = msg_length - 1; // remove the checksum 
-        if(resp == SERIAL_HANDLER_CHECKSUM_MISMATCH){
-            // ask for a resend 
-            request_resend(); 
-            _status = SERIAL_HANDLER_OK; 
-            return _status; 
-        }
-        else if(resp == SERIAL_HANDLER_OK){
-            // check the code for a connection request 
-            if(_receive_buffer[2] == COMMUNICATION_CONNECTION_REQUEST_FLAG){
-                // update the state 
-                _connected = true; 
-                // send a connected message 
-                byte connection_success = COMMUNICATION_CONNECTION_SUCCESS_FLAG; 
-                send_message(&connection_success, 1); 
-                _status = SERIAL_HANDLER_OK; 
-                return _status; 
+    // check if a message is available 
+    if(_message_available) return SERIAL_HANDLER_MESSAGE_AVAILABLE; 
+
+    if(SERIAL_HANDLER_SOURCE.available() > 0){
+        // snag the message 
+        delSerialMessage(_received_message); // del the serial message held here 
+        _received_message = read_message(); 
+        if(_received_message != NULL){
+            // check for a low-level 
+            switch(_received_message->message_flag){
+                case(COMMUNICATION_CONNECTION_REQUEST_FLAG): {
+                    // set connection status to true 
+                    _connected = true; 
+                    // send a communication success 
+                    SerialMessage * resp = newSerialMessage(COMMUNICATION_CONNECTION_SUCCESS_FLAG,0); 
+                    send_message(resp); 
+                    delSerialMessage(resp); 
+                    break; } 
+                default: 
+                    // raise that a message is available 
+                    _message_available = true; 
+                    // return message avialble flag 
+                    return SERIAL_HANDLER_MESSAGE_AVAILABLE; 
+                    break; 
             }
-            
-            _message_avail = true;
-            _status = SERIAL_HANDLER_MESSAGE_AVAILABLE; 
-            return _status; 
         }
     }
-    return _status; 
+    return SERIAL_HANDLER_OK; 
 }
 
-SerialHandlerStatus_t SerialHandler::send_message(SerialMessage * message){
-    // encode the message into a single buffer 
-    byte send_buffer[message->data_length + 4]; 
+SerialMessage * SerialHandler::get_message(){
+    // return the message available 
+    // make a copy of the message 
+   
+    if(_message_available){
+         SerialMessage * msg = newSerialMessage(_received_message->message_flag, _received_message->data_length); 
+        // cpy the data 
+        memcpy(msg->data, _received_message->data, msg->data_length); 
+        _message_available = false; 
+        return msg; 
+    }
+    return NULL; 
+}
+
+
+SerialHandlerStatus_t SerialHandler::send_message(SerialMessage *message){
+    // convert into a buffer and send the buffer 
+    int send_buffer_length = message->data_length + 4; // 2 bytes for length, 1 data flag, 1 checksum 
+    byte send_buffer[send_buffer_length];
     // encode the length 
-    int length = message->data_length + 2; // add the checksum 
-    send_buffer[0] = (byte)(length >> 8); 
-    send_buffer[1] = (byte)(length); 
-    send_buffer[2] = message->message_flag; 
-    // encode the checksum 
+    send_buffer[0] = (byte)((message->data_length + 2) >> 8); 
+    send_buffer[1] = (byte)(message->data_length + 2); 
+    send_buffer[2] = (byte)message->message_flag; 
+    // calculate the checksum and copy buffer contents 
     unsigned long crc = send_buffer[0] + send_buffer[1] + send_buffer[2]; 
     for(int i = 0; i < message->data_length; i ++){
         crc += message->data[i]; 
         send_buffer[i + 3] = message->data[i]; 
     }
-    send_buffer[message->data_length + 3] = (byte)(crc); 
+    send_buffer[send_buffer_length - 1] = (byte)crc; 
     // write the buffer 
-    SerialHandlerStatus_t send_status = write_buffer(send_buffer,message->data_length + 4); 
-    // return the status 
-    return send_status; 
+    SerialHandlerStatus_t write_status = write_buffer(send_buffer, send_buffer_length); 
+    return write_status; 
 }
 
+
 SerialHandlerStatus_t SerialHandler::write_buffer(byte * buffer, int length){
-    // write the buffer to serial and wait for a response 
-    int resend_count = 0; 
-    // TODO flush the serial buffer at this point 
-    for(; resend_count < SERIAL_HANDLER_RESEND_ATTEMPTS; resend_count ++){
-        // send the data 
+    // write to the serial 
+    int send_attempt = 0; 
+    for(; send_attempt < SERIAL_HANDLER_RESEND_ATTEMPTS; send_attempt ++){
         SERIAL_HANDLER_SOURCE.write(buffer, length); 
-        // check the serial source for a response 
-        read_message(_receive_buffer, SERIAL_HANDLER_RECIEVE_BUFFER_LENGTH); 
-        switch(_receive_buffer[2]){
-            case(COMMUNICATION_SEND_OK):
-                // send good, return with an ok 
-                return SERIAL_HANDLER_OK; 
-                break; 
-            case(COMMUNICATION_RESEND_REQUEST):
-                // loop 
-                break; 
-            default:
-                // weird error 
-                // TODO handle this 
-                break; 
+        SerialMessage *message = read_message(); 
+        if(message != NULL){
+            switch(message->message_flag){
+                case(COMMUNICATION_SEND_OK):
+                    // message send ok 
+                    delSerialMessage(message); 
+                    return SERIAL_HANDLER_OK; 
+                    break; 
+                case(COMMUNICATION_RESEND_REQUEST):
+                    delSerialMessage(message); 
+                    // loop to resend 
+                    break; 
+            }
         }
     }
-    // presume send fail 
+    // send failed 
     return SERIAL_HANDLER_SEND_FAILED; 
 }
 
-SerialHandlerStatus_t SerialHandler::send_message(byte * buffer, int length){
-    // encode the length in the first two bytes 
-    int msg_length = length + 1; // one extra for the checksum 
-    byte length1 = (byte)(msg_length >> 8); 
-    byte length2 = (byte)msg_length; 
-    // write the header  
-    SERIAL_HANDLER_SOURCE.write(length1); 
-    SERIAL_HANDLER_SOURCE.write(length2);
-    // place holder for checksum 
-    // checksum includes the length bytes 
-    unsigned long sum = length1 + length2; // for larger messages, long instead of int 
-    for(int i = 0; i < length; i++){
-        sum += buffer[i]; // add for the checksum 
-        SERIAL_HANDLER_SOURCE.write(buffer[i]); // write the buffer element 
-    }
-    // write the checksum 
-    SERIAL_HANDLER_SOURCE.write((byte)sum); 
-
-    // wait for response and resend if neccessary 
-    int resend_count = 0; 
-    for(; resend_count < SERIAL_HANDLER_RESEND_ATTEMPTS; resend_count ++){
-        // wait for a response 
-        SerialHandlerStatus_t resp = wait_for_message_response(); 
-        switch(resp){
-            case(SERIAL_HANDLER_OK):
-                // send good, escape 
-                _status = SERIAL_HANDLER_OK; 
-                return _status; 
-                break; 
-            case(SERIAL_HANDLER_RESEND_REQUEST):
-                // resend request 
-                SERIAL_HANDLER_SOURCE.write(length1); // length byte 1 
-                SERIAL_HANDLER_SOURCE.write(length2); // legnth byte 2 
-                SERIAL_HANDLER_SOURCE.write(buffer, length); // message 
-                SERIAL_HANDLER_SOURCE.write((byte)sum); // checksum 
-                break; 
-            default: 
-                // error state 
-                _status = resp; 
-                return resp; 
-                break; 
-        }
-
-    }
-    
-    return _status; 
-}
 
 
-SerialHandlerStatus_t SerialHandler::wait_for_message_response(){
-    // get a message 
-    read_message(_receive_buffer, SERIAL_HANDLER_RECIEVE_BUFFER_LENGTH); 
-    // handle a connection request here 
-    if(_receive_buffer[2] == COMMUNICATION_CONNECTION_SUCCESS_FLAG){
-        _connected = true;
-        return wait_for_message_response(); 
-    }
-    // check the status 
-    switch(_status){
-        case(SERIAL_HANDLER_BUFFER_TOO_SMALL):
-            // this should not happen but should be accomadated in the future 
-            // TODO
-            return _status; 
-            break; 
-        default: 
-            break; 
-    }
-    
-    // parse the message for the ok or a resend request 
-    byte data = _receive_buffer[3];         // 3rd byte holds the actual data 
-    switch(data){
-        case(COMMUNICATION_SEND_OK):
-            return SERIAL_HANDLER_OK; 
-        case(COMMUNICATION_RESEND_REQUEST):
-            return SERIAL_HANDLER_RESEND_REQUEST; 
-        default: 
-            return SERIAL_HANDLER_UNKNOWN_ERROR; 
-    }
-    return SERIAL_HANDLER_UNKNOWN_ERROR; 
-}
-
-
-SerialHandlerStatus_t SerialHandler::decode_message(byte * buffer, int length){
-    // compute the checksum 
-    // 8 bit checksum, ignore the last byte of the message (where the checksum already is)
-    unsigned int checksum = 0; 
-    for(int i = 0; i < length - 1; i ++){
-        checksum += buffer[i]; 
-    }
-    // compare the checksume 
-    if(buffer[length-1] != (byte)checksum){
-        // checksum mismatch 
-        _status = SERIAL_HANDLER_CHECKSUM_MISMATCH; 
-        return _status; 
-    }
-    else{
-        _status = SERIAL_HANDLER_OK; 
-        return _status; 
-    }
-}
-
-int SerialHandler::read_message(byte *buffer, int max_length){
-    // start a timer for timeout purposes 
+SerialMessage * SerialHandler::read_message(){
+    bool done = false; 
     long start_time = millis(); 
-    while(!SERIAL_HANDLER_SOURCE.available() && millis() - start_time < SERIAL_HANDLER_TIMEOUT); 
-    if(!SERIAL_HANDLER_SOURCE.available()){
-        // set the status 
-        _status = SERIAL_HANDLER_RECEIVE_TIMEOUT; 
-        return -1; 
+    int send_attempt = 0; 
+    while(!done && millis() - start_time < SERIAL_HANDLER_TIMEOUT && send_attempt < SERIAL_HANDLER_RESEND_ATTEMPTS){
+        // wait for a message or timeout 
+        while(SERIAL_HANDLER_SOURCE.available() == 0 && millis() - start_time < SERIAL_HANDLER_TIMEOUT); 
+        if(SERIAL_HANDLER_SOURCE.available() > 0){
+            // read the message 
+            // read in the length bytes 
+            byte header_bytes[3]; 
+            SERIAL_HANDLER_SOURCE.read(header_bytes, 3); 
+            int length = header_bytes[0] << 8 | header_bytes[1] - 2; // remove the flag and the checksum  
+            int flag = header_bytes[2]; 
+            SerialMessage *message = newSerialMessage(flag, length); 
+            // copy in the contents 
+            SERIAL_HANDLER_SOURCE.read(message->data, message->data_length); 
+            // read the crc 
+            byte crc; 
+            SERIAL_HANDLER_SOURCE.read(&crc, 1); 
+            // check if the checksums match 
+            int check = header_bytes[2] + header_bytes[1] + header_bytes[0]; 
+            for(int i = 0; i < message->data_length; i ++){
+                check += message->data[i]; 
+            }
+            if(crc != (byte)check){
+                // checksum mismatch 
+                // send a resend request 
+                if(send_attempt + 1 < SERIAL_HANDLER_RESEND_ATTEMPTS){
+                    send_resend_request(); 
+                }
+                send_attempt ++; 
+            }
+            else{
+                // successfull message response 
+                // return the pointer 
+                _status = SERIAL_HANDLER_OK;
+                return message;  
+            }
+        }    
     }
-    // otherwise, read in the message 
-    // read the length 
-    SERIAL_HANDLER_SOURCE.readBytes((char *)buffer,2); 
-    // get the length 
-    int length = buffer[0] << 8 | buffer[1]; 
-    // sanity check length here 
-    if(length > (max_length - 2)){    // account for the length bytes in the message 
-        // override the length to read in the entire message 
-        SERIAL_HANDLER_SOURCE.readBytes((char *)&buffer[2], max_length - 2); 
-        // read in the rest of the message into a null buffer 
-        byte temp_buffer[length - (max_length - 2)]; 
-        SERIAL_HANDLER_SOURCE.readBytes((char *)temp_buffer, length - (max_length - 2)); 
-        // set the status 
-        _status = SERIAL_HANDLER_BUFFER_TOO_SMALL; 
-        return max_length; 
+    // set a flag 
+    if(send_attempt >= SERIAL_HANDLER_RESEND_ATTEMPTS){
+        // requested a resend, something happend 
+        _status = SERIAL_HANDLER_RESEND_LIMIT_REACHED; 
     }
-    else{   // buffer is large enough 
-        SERIAL_HANDLER_SOURCE.readBytes((char *)&buffer[2], length);
-        _status = SERIAL_HANDLER_OK; 
-        return length + 2; 
-    }
-    return -1;
+    else _status = SERIAL_HANDLER_READ_TIMEOUT; 
+    return NULL; 
 }
 
-void SerialHandler::request_resend(){
-    // construct the simple message 
-    byte resend_command = COMMUNICATION_RESEND_REQUEST; 
-    send_message(&resend_command, 1); 
+void SerialHandler::send_message_ok_reciept(){
+    // construct the message 
+    SerialMessage * message = newSerialMessage(COMMUNICATION_SEND_OK, 0); 
+    // write the message 
+    send_message(message); 
+    // del the message 
+    delSerialMessage(message); 
+}
+
+void SerialHandler::send_resend_request(){
+    // construct the message 
+    SerialMessage * message = newSerialMessage(COMMUNICATION_RESEND_REQUEST, 0); 
+    // write the message 
+    send_message(message); 
+    // del the message 
+    delSerialMessage(message); 
 }

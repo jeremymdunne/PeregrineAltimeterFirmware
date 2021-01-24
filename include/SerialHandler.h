@@ -1,10 +1,8 @@
 /**
  * @file SerialHandler.h 
- * \brief Handles serial communication 
  * 
- * This class handles serial communication with the altimeter and any connected serial devices (groundstations)
+ * \brief Handles all incoming and outgoing serial communication 
  * 
- * \author Jeremy Dunne 
  */ 
 
 #ifndef _SERIAL_HANDLER_H_
@@ -12,182 +10,120 @@
 
 #include <Arduino.h> 
 #include <CommunicationProtocol.h> 
+#include <SerialMessage.h> 
 
 #define SERIAL_HANDLER_SOURCE                   Serial 
 #define SERIAL_HANDLER_BAUD_RATE                115200 
 #define SERIAL_HANDLER_RECIEVE_BUFFER_LENGTH    256 
 #define SERIAL_HANDLER_TIMEOUT                  1000
-#define SERIAL_HANDLER_RESEND_ATTEMPTS          3 
+#define SERIAL_HANDLER_RESEND_ATTEMPTS          100 
+
+
+
 
 typedef enum{
-    SERIAL_HANDLER_OK = 0,                  //< Status is ok 
-    SERIAL_HANDLER_MESSAGE_AVAILABLE,       //< Message available 
-    SERIAL_HANDLER_NO_MESSAGE_AVAILABLE,    //< No Message Available 
-    SERIAL_HANDLER_BUFFER_TOO_SMALL,        //< Buffer provided to store the message in was too small 
-    SERIAL_HANDLER_NOT_CONNECTED,           //< No device connected 
-    SERIAL_HANDLER_SEND_FAILED,             ///< Send failed 
-    SERIAL_HANDLER_RECEIVE_TIMEOUT,         //< Timeout on attempting to recieve a message 
-    SERIAL_HANDLER_CHECKSUM_MISMATCH,       //< Mismatch on the message checksum, need to request a resend 
-    SERIAL_HANDLER_RESEND_REQUEST,          //< Request to resend the last message 
-    SERIAL_HANDLER_NO_RESPONSE_FROM_HOST,   //< No response received from host
-    SERIAL_HANDLER_UNKNOWN_ERROR            //< Unkown error occurred 
+    SERIAL_HANDLER_OK = 0,              ///< Serial Handler ok
+    SERIAL_HANDLER_CHECKSUM_MISMATCH,   ///< Checksum mismatch
+    SERIAL_HANDLER_SEND_FAILED,             ///< Failed to send the message 
+    SERIAL_HANDLER_RESEND_LIMIT_REACHED,    ///< Resend limit reached 
+    SERIAL_HANDLER_READ_TIMEOUT,        ///< Timeout on a read attempt  
+    SERIAL_HANDLER_NO_RESPONSE,         ///< No response on a message read  
+    SERIAL_HANDLER_MESSAGE_AVAILABLE    ///< Message available
+
 } SerialHandlerStatus_t; 
-
-
-struct SerialMessage{
-    int message_flag; 
-    int data_length; 
-    byte * data; 
-}; 
 
 
 class SerialHandler{
 public: 
     /**
-     * initialize serial communications 
-     *  
+     * initialize the serial device 
+     * 
      * @return status code 
      */ 
     SerialHandlerStatus_t begin(); 
 
     /**
-     * update the serial and check for messages 
-     * 
-     * if serial is not connected, will attempt a connection 
+     * update the serial 
      * 
      * @return status code 
      */ 
     SerialHandlerStatus_t update(); 
 
     /**
-     * close the serial communication (if opened)
-     * 
-     * @return status code 
-     */ 
-    SerialHandlerStatus_t close(); 
-
-    /**
-     * get the last status 
-     * 
-     * @return status code 
-     */ 
-    SerialHandlerStatus_t get_status(){ return _status; } 
-
-    /**
-     * send a message over serial
-     * 
-     * Handles communication handshake (length in first two bytes, checksum at end)
-     * 
-     * Blocks until a successful send recipt or timeout has occurred 
-     * 
-     * @param buffer message to send 
-     * @param length length of message to send 
-     * 
-     * @return status code
-     */ 
-    SerialHandlerStatus_t send_message(byte * buffer, int length); 
-
-
-    /**
      * send a message over serial 
      * 
-     * Handles encoding the message to be send 
-     * Blocks until a message recipt is received 
-     * @param message pointer to the message to be sent 
+     * @param message message to send 
      * @return status code 
      */ 
-    SerialHandlerStatus_t send_message(SerialMessage * message); 
-
-    /** 
-     * get the most recent serial message 
-     * strongly suggest use the get_message_length() function to determine appropriate length of the buffer 
-     * 
-     * @param buffer to copy the contents into 
-     * 
-     * @return length of the message 
-     */ 
-    int get_message(byte * buffer); 
+    SerialHandlerStatus_t send_message(SerialMessage *message); 
 
     /**
-     * get the length of the most recent serial message 
-     * 
-     * @return length (in bytes) of the message 
+     * get the connection status of the serial 
+     * @return true for connected, false for not 
      */ 
-    int get_message_length(); 
+    bool is_connected() { return _connected; } 
 
     /**
-     * attempt a connection
-     * 
-     * does not wait until a connection is confirmed 
-     */ 
-    void send_connection_request(); 
+     * get the available message 
+     *  
+     * @return pointer to the avialable message
+     */  
 
+    SerialMessage * get_message(); 
+
+    /**
+     * stop serial communication 
+     * 
+     * @return status code 
+     */ 
+    SerialHandlerStatus_t stop(); 
+
+    int _resend_attemps = 0; 
 
 private: 
-    SerialHandlerStatus_t _status;                                      //< Last status 
-    bool _connected = false;                                            //< current connection status 
-    byte _receive_buffer[SERIAL_HANDLER_RECIEVE_BUFFER_LENGTH];         //< receive buffer to store data into   
-    unsigned int _receive_buffer_index = 0;  
-    bool _message_avail = false;         
+    bool _connected = false; 
+    bool _message_available = false; 
+    SerialHandlerStatus_t _status;
+    SerialMessage * _received_message = NULL; 
 
-    SerialMessage _received_message = {0,0,_receive_buffer};                        
 
-    /** 
-     * write a buffer over serial and wait for a recipt 
+    /**
+     * write a buffer to the serial
+     * wait for a message receipt and resend if necessary 
      * 
-     * @param buffer buffer to send 
-     * @param length length of the buffer 
+     * @param buffer pointer to the buffer 
+     * @param length number of bytes to write 
      * @return status code 
      */ 
     SerialHandlerStatus_t write_buffer(byte * buffer, int length); 
 
-
     /**
-     * wait for a message recieved response 
-     * responses should either be an 'ok' or a resend request
+     * read in a message from serial 
      * 
-     * @return status code 
+     * @param buffer buffer to place the message into 
+     * @param max_length maximum length of the buffer 
+     * @return number of bytes written to the buffer 
      */ 
-    SerialHandlerStatus_t wait_for_message_response(); 
+    int read_serial(byte * buffer, int max_length); 
 
     /**
-     * get a message from the host 
-     * will timeout after default time 
-     * any messages too long for the buffer will be truncated and discarded 
-     * check _status after calling this function for any errors 
+     * read in a message from serial 
      *  
-     * @param buffer buffer to store data in (minimum size of 2, much larger expected)
-     * @param max_length maximum length allowed 
-     * 
-     * @return number of bytes recieved 
+     * @return pointer to the recieved message 
      */ 
-    int read_message(byte * buffer, int max_length); 
+    SerialMessage * read_message(); 
+
 
     /**
-     * decode a message using the standard protocol 
-     * for now, this will only check the message checksum and report any errors 
-     *  
-     * @param buffer buffer the message is located in 
-     * @param length length of the message 
-     *  
-     * @return status code
+     * send a message ok reciept 
      */ 
-    SerialHandlerStatus_t decode_message(byte * buffer, int length); 
+    void send_message_ok_reciept(); 
 
     /**
-     * request a message resend for host device 
-     * 
+     * send a message rescend reciept 
      */ 
-    void request_resend(); 
+    void send_resend_request(); 
 
-    /**
-     * get the required size for a message
-     * this is done for future expansion reasons 
-     * 
-     * @param message_size number of bytes in the message 
-     * @return number of bytes needed for the protocol 
-     */ 
-    int determine_message_size(int message_size){return message_size + 3;} // 2 for the length, 1 for the checksum 
 
 
 }; 

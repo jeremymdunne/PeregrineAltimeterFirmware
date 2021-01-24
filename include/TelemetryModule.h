@@ -21,6 +21,7 @@
 #include <JFAT.h> 
 #include <HardwareDefs.h>
 #include <Configurations.h> 
+#include <SerialMessage.h> 
  
 /// Enum containing all possible responses made by the system 
 typedef enum {
