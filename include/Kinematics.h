@@ -70,6 +70,23 @@ private:
     UpdateTimer _imu_timer; 
 
 
+    // preflight constants 
+    float _ground_level_asl = 0; 
+    float _ground_level_pressure = 0;
+
+    // matched pair used to determine launch 
+    float _prelaunch_altitude_buffer[32]; 
+    float _prelaunch_acceleration_buffer[32];
+    int _prelaunch_buffer_index = 0; 
+    bool _prelaunch_buffer_filled = false; 
+
+
+    
+
+
+
+
+
     /**
      * init all sensors 
      * @return status code 
