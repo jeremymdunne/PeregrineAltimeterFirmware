@@ -31,7 +31,8 @@ typedef enum{
     KINEMATICS_BMP_INIT_FAIL,               ///< Failed to init the BMP 
     KINEMATICS_BMP_UPDATE_FAIL,             ///< Failed to update the BMP 
     KINEMATICS_SENSOR_INIT_FAIL,            ///< Failed to init a sensor 
-    KINEMATICS_UNKOWN_ERROR                 ///< Kinematics unkown error 
+    KINEMATICS_UNKOWN_ERROR,                ///< Kinematics unkown error 
+    KINEMATICS_FLIGHT_PHASE_CHANGE          ///< Flight Phase Change Detected 
 }   KinematicsStatus_t; 
 
 class Kinematics{
@@ -74,6 +75,8 @@ private:
     float _ground_level_asl = 0; 
     float _ground_level_pressure = 0;
 
+    float _apogee = 0; // used to watch for apogee phase 
+
     // matched pair used to determine launch 
     float _prelaunch_altitude_buffer[32]; 
     float _prelaunch_acceleration_buffer[32];
@@ -81,10 +84,26 @@ private:
     bool _prelaunch_buffer_filled = false; 
 
 
+    // flight phase detection variables 
+    bool _flight_phase_watch_triggered = false;
+    unsigned long _flight_phase_watch_time = 0; 
+
     
 
+    /**
+     * check for a flight phase update 
+     * @return status code 
+     */ 
+    KinematicsStatus_t check_for_flight_phase_change(); 
 
 
+    /**
+     * get the total acceleration magnitude 
+     * @return total acceleration on rocket 
+     */ 
+    float get_accel_magnitude(){
+        return pow(_state->_acceration[0], 2) + pow(_state->_acceration[1], 2) + pow(_state->_acceration[2], 2); 
+    }
 
 
     /**

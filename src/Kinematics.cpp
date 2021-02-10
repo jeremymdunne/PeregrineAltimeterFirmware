@@ -28,6 +28,85 @@ KinematicsStatus_t Kinematics::update(){
     return KINEMATICS_OK;
 }
 
+
+KinematicsStatus_t Kinematics::check_for_flight_phase_change(){
+    // check for a flight phase change 
+    // base off of current phase 
+    switch(_state->_flight_phase){
+        case(WAITING_FOR_LAUNCH_PHASE):
+            // flight phase based on sustained acceleration over a time period 
+            if(_flight_phase_watch_triggered){
+                // already cautious about the flight phase 
+                // check if acceleration is maintained 
+                if(get_accel_magnitude() > LAUNCH_DETECTION_MINUMUM_SUSTAINED_ACCELERATION){
+                    if(_state->_flight_time - _flight_phase_watch_time > LAUNCH_DETECTION_MINUMUM_SUSTAINED_TIME){
+                        // acceleration has been maintained, trigger flight phase change 
+                        _state->_flight_phase = BOOST_PHASE; 
+                        // overwrite the trigger 
+                        _flight_phase_watch_triggered = false; 
+                        _flight_phase_watch_time = 0; 
+                        // return notice of flight change 
+                        return KINEMATICS_FLIGHT_PHASE_CHANGE; 
+                    }
+                    // otherwise, keep on 
+                }
+                else{
+                    // acceleration magnitude fell below threshold 
+                    // reset the trigger 
+                    _flight_phase_watch_triggered = false; 
+                    _flight_phase_watch_time = 0; 
+                }
+            }
+            else{
+                // check if the magnitude is above the threshold 
+                if(get_accel_magnitude() > LAUNCH_DETECTION_MINUMUM_SUSTAINED_ACCELERATION){
+                    // set the trigger and time 
+                    _flight_phase_watch_triggered = true; 
+                    _flight_phase_watch_time = _state->_flight_time; 
+                }
+            }
+            break; 
+        case(BOOST_PHASE):
+            // coast phase is determined when the acceleration crosses over the 'zero point' to become negative 
+            // this will fail to account for residual thrust in motors, but should be good enough 
+            if(_flight_phase_watch_triggered){
+                // check if the Z acceleration is less than 0 
+                if(_state->_acceration[2] < 0){
+                    // check the time 
+                    if(_state->_flight_time - _flight_phase_watch_time > COAST_DETECTION_MINUMUM_SUSTAINED_TIME){
+                        // change the state 
+                        _state->_flight_phase = COAST_PHASE; 
+                        //overwrite the states 
+                        _flight_phase_watch_triggered = false; 
+                        _flight_phase_watch_time = 0; 
+                        return KINEMATICS_FLIGHT_PHASE_CHANGE; 
+                    }
+                }
+                // reset the trigger 
+                _flight_phase_watch_triggered = false; 
+                _flight_phase_watch_time = 0; 
+            }
+            else{
+                if(_state->_acceration[2] < 0){
+                    // start the trigger 
+                    _flight_phase_watch_triggered = true; 
+                    _flight_phase_watch_time = _state->_flight_time; 
+                }
+            }
+            break; 
+        case(COAST_PHASE): 
+            // wait for baro to be decreasing 
+            if(_flight_phase_watch_triggered){
+                // 
+            }
+            else{
+
+            }
+
+    }
+}
+
+
 KinematicsStatus_t Kinematics::init_sensors(){
     // init the bmp 
     KinematicsStatus_t bmp_status = init_bmp(); 
