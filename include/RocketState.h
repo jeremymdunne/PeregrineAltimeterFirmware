@@ -23,15 +23,17 @@ struct RocketState{
     // time definitions 
     unsigned long _sys_time;            ///< system time according to start up in microsecond  
     unsigned long _flight_time;         ///< time into flight in microseconds 
+    unsigned long _launch_time;         ///< time the launch ocurred (according to _sys_time)
 
 
     // sensor data 
     float _pressure;                    ///< measured pressure in pascals 
     float _temperature;                 ///< measured temperature in celsius 
-    float _acceration[3];               ///< measured accelleration in m/s/s, XYZ 
+    float _acceleration[3];               ///< measured accelleration in m/s/s, XYZ 
     float _rotation_rates[3];           ///< measured rotation rates in deg/s, Roll, Pitch, Yaw 
     float _magnetic_strength[3];        ///< measured in milliteslas, XYZ 
 
+    float _altitude_asl;                ///< measured altitude asl, used for launch determination 
 
     // compiled data 
     float _fused_position[3];           ///< fused position in m, XYZ 

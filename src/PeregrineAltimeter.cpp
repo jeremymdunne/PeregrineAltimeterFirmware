@@ -28,11 +28,29 @@ int PeregrineAltimeter::run(){
     _telemetry.send_file_list(); 
     _telemetry.send_last_file(); 
     */ 
+   unsigned long last_time = millis(); 
     while(true){
+        // update the time 
+        _state._sys_time = millis(); 
+        // check if flight time is legit 
+        if(_state._flight_phase != WAITING_FOR_LAUNCH_PHASE){
+            _state._flight_time = _state._sys_time - _state._launch_time; 
+        }
+
+        // update modules 
         // delay(2000); 
         _kinematics.update(); 
         _telemetry.update(); 
-        
+        delay(5);
+        // print out the loop time 
+        long loop_time = millis() - _state._sys_time; 
+        char buffer[64] = "Loop Time: ";  
+        char time[10]; 
+        itoa(loop_time, time, 10); 
+        strcat(buffer, time); 
+        char end[] = "ms"; 
+        strcat(buffer, end); 
+        _telemetry.send_verbose_string(buffer); 
        
     }
     return 0; 

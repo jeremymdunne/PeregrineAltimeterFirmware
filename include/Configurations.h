@@ -37,6 +37,7 @@
 
 #define APOGEE_DETECTION_MAXIMUM_VELOCITY                       30  // m/s 
 #define APOGEE_DETECTION_MINUMUM_APOGEE                         20 // m 
+#define APOGEE_DETECTION_MINIMUM_SUSTAINED_TIME                 300 // s 
 
 
 

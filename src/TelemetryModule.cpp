@@ -277,7 +277,7 @@ void TelemetryModule::encode_general_flight_data(StorableData *data){
     int pntr = 0; 
     // accel 
     for(int i = 0; i < 3; i ++){
-        convert_float_to_bytes(_rocket_state->_acceration[i], &data->data[pntr], STORAGE_GENERAL_FLIGHT_ACCEL_RESOLUTION, STORAGE_GENERAL_FLIGHT_ACCEL_BYTE_SIZE, STORAGE_GENERAL_FLIGHT_ACCEL_MAX_VALUE, STORAGE_GENERAL_FLIGHT_ACCEL_MIN_VALUE);  
+        convert_float_to_bytes(_rocket_state->_acceleration[i], &data->data[pntr], STORAGE_GENERAL_FLIGHT_ACCEL_RESOLUTION, STORAGE_GENERAL_FLIGHT_ACCEL_BYTE_SIZE, STORAGE_GENERAL_FLIGHT_ACCEL_MAX_VALUE, STORAGE_GENERAL_FLIGHT_ACCEL_MIN_VALUE);  
         pntr += STORAGE_GENERAL_FLIGHT_ACCEL_BYTE_SIZE; 
     }
     // gyro 

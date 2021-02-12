@@ -7,6 +7,11 @@
  * 
  * TODO rename this class to a more appropriate name 
  * 
+ * 
+ * 
+ * Z + is up (the direction the rocket is supposed to travel)
+ * 
+ * 
  * \author Jeremy Dunne 
  */ 
 
@@ -71,6 +76,15 @@ private:
     UpdateTimer _imu_timer; 
 
 
+    // sensor fusion 
+    UpdateTimer _position_fuser_timer; 
+
+    // velocity data 
+    unsigned long _last_accel_update = 0; 
+    float _baro_running_value; 
+
+
+
     // preflight constants 
     float _ground_level_asl = 0; 
     float _ground_level_pressure = 0;
@@ -91,6 +105,18 @@ private:
     
 
     /**
+     * update the altitude fusing algorithm 
+     * @return status code 
+     */ 
+    KinematicsStatus_t update_altitude_fusion(); 
+
+    /**
+     * get the altitude from barometric and temperature data 
+     * @return altitude (asl) in meters 
+     */ 
+    float get_altitude_from_baro(); 
+
+    /**
      * check for a flight phase update 
      * @return status code 
      */ 
@@ -102,7 +128,7 @@ private:
      * @return total acceleration on rocket 
      */ 
     float get_accel_magnitude(){
-        return pow(_state->_acceration[0], 2) + pow(_state->_acceration[1], 2) + pow(_state->_acceration[2], 2); 
+        return pow(_state->_acceleration[0], 2) + pow(_state->_acceleration[1], 2) + pow(_state->_acceleration[2], 2); 
     }
 
 
